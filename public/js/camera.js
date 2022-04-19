@@ -73,6 +73,6 @@
             xOffset = currentX;
             yOffset = currentY;
 
-            dragItem.style.transform = "translate3d(" + currentX + "px, " + currentY + "px, 0)";
+            dragItem.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
         }
     }

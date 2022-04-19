@@ -24,13 +24,13 @@ var initialY;
 var xOffset = 0;
 var yOffset = 0;
 
-container.addEventListener("touchstart", dragStart, false);
-container.addEventListener("touchend", dragEnd, false);
-container.addEventListener("touchmove", drag, false);
+container.addEventListener("touchstart", dragStart);
+container.addEventListener("touchend", dragEnd);
+container.addEventListener("touchmove", drag);
 
-container.addEventListener("mousedown", dragStart, false);
-container.addEventListener("mouseup", dragEnd, false);
-container.addEventListener("mousemove", drag, false);
+container.addEventListener("mousedown", dragStart);
+container.addEventListener("mouseup", dragEnd);
+container.addEventListener("mousemove", drag);
 
 function dragStart(e) {
     if (e.type === "touchstart") {

@@ -23,6 +23,6 @@ const ctx = canvas.getContext('2d');
 for (const y in pixelArray) {
     for (const x in y) {
         ctx.fillStyle = colors[pixelArray[y][x]];
-        ctx.fillRect(x, y, 1, 1);Z
+        ctx.fillRect(x, y, 1, 1);
     }
 }

@@ -10,7 +10,7 @@
 
     document.addEventListener("wheel", function(e) {
 
-        if (e.deltaY > 0) {
+        if (e.deltaY < 0) {
             zoomElement.style.transform = `scale(${zoom += ZOOM_SPEED})`;
         } else {
             zoomElement.style.transform = `scale(${zoom -= ZOOM_SPEED})`;

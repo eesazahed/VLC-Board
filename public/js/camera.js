@@ -1,9 +1,5 @@
     // I skidded all of this code. ALL OF IT
 
-    function setTranslate(xPos, yPos, el) {
-        el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
-    }
-
     const zoomElement = document.getElementById("zoom-container");
     let zoom = 1;
     const ZOOM_SPEED = 0.1;
@@ -77,6 +73,6 @@
             xOffset = currentX;
             yOffset = currentY;
 
-            setTranslate(currentX, currentY, dragItem);
+            el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
         }
     }

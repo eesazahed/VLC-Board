@@ -1,6 +1,4 @@
-# Express.js-Boilerplate
+#  VLC r/Place
 
-My default Express.js config
+An r/place recreation for VLC. 
 
-- Ejs templates under views/
-- CSS & JS under public/

@@ -11,5 +11,4 @@ body {
 
 canvas {
     border: 1.2px solid black;
-    transform: scale(40);
 }

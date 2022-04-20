@@ -26,3 +26,8 @@ for (let y = 0; y < pixelArray.length; y += 1) {
         ctx.fillRect(x * 100, y * 100, 100, 100);
     }
 }
+
+const colorElement = document.getElementById("colors");
+for (const color of Object.keys(colors)) {
+    colorElement.innerHTML += `<div style="background-color: ${colors[color]};" color="${color}"></div>`    
+}

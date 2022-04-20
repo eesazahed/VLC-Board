@@ -20,17 +20,19 @@ function zoom_camera(event) {
 }
 
 function dragStart(e) {
-    if (e.type === "touchmove") {
-        x = e.touches[0].clientX
-        y = e.touches[0].clientY
-    } else {
-        x = e.clientX;
-        y = e.clientY;
-    }
-    initialX = x - currentX * zoom;
-    initialY = y - currentY * zoom;
+    if (e.target === dragElement) {
+        if (e.type === "touchmove") {
+            x = e.touches[0].clientX
+            y = e.touches[0].clientY
+        } else {
+            x = e.clientX;
+            y = e.clientY;
+        }
+        initialX = x - currentX * zoom;
+        initialY = y - currentY * zoom;
 
-    dragging = true;
+        dragging = true;
+    }
 }
 
 function dragEnd(e) {
@@ -62,10 +64,10 @@ document.addEventListener("wheel", zoom_camera);
 
 const container = document.getElementById("container");
 
-container.addEventListener("touchstart", dragStart);
-container.addEventListener("touchend", dragEnd);
-container.addEventListener("touchmove", move);
+document.addEventListener("touchstart", dragStart);
+document.addEventListener("touchend", dragEnd);
+document.addEventListener("touchmove", move);
 
-container.addEventListener("mousedown", dragStart);
-container.addEventListener("mouseup", dragEnd);
-container.addEventListener("mousemove", move);
+document.addEventListener("mousedown", dragStart);
+document.addEventListener("mouseup", dragEnd);
+document.addEventListener("mousemove", move);

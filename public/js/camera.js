@@ -20,20 +20,20 @@ function zoom_camera(event) {
 }
 
 function dragStart(e) {
-    if (e.type === "touchstart") {
-        initialX = e.touches[0].clientX - currentX;
-        initialY = e.touches[0].clientY - currentY;
+    if (e.type === "touchmove") {
+        x = e.touches[0].clientX
+        y = e.touches[0].clientY
     } else {
-        initialX = e.clientX - currentX;
-        initialY = e.clientY - currentY;
+        x = e.clientX;
+        y = e.clientY;
     }
+    initialX = x - currentX * zoom;
+    initialY = y - currentY * zoom;
 
     dragging = true;
 }
 
 function dragEnd(e) {
-    initialX = currentX;
-    initialY = currentY;
     dragging = false;
 }
 
@@ -49,9 +49,9 @@ function move(e) {
             y = e.clientY;
         }
 
-        currentX = x - initialX;
-        currentY = y - initialY;
-
+        currentX = (x - initialX) / zoom;
+        currentY = (y - initialY) / zoom;
+        
         if (currentX >= 1000 || currentX <= -1000) return;
         if (currentY >= 1000 || currentY <= -1000) return;
         dragElement.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;

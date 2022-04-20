@@ -1,72 +1,71 @@
-// I skidded all of this code. ALL OF IT
-
 const zoomElement = document.getElementById("zoom-container");
 let zoom = 1;
-const ZOOM_SPEED = 0.1;
 
-document.addEventListener("wheel", function(e) {
-    if (e.deltaY < 0) {
-        zoomElement.style.transform = `scale(${zoom += ZOOM_SPEED})`;
+const dragElement = document.getElementById("board");
+
+let dragging = false;
+let currentX = 0;
+let currentY = 0;
+let initialX, initialY;
+
+
+function zoom_camera(event) {
+    if (event.deltaY < 0) {
+        if (zoom >= 1.6) return;
+        zoomElement.style.transform = `scale(${zoom += 0.1})`;
     } else {
-        zoomElement.style.transform = `scale(${zoom -= ZOOM_SPEED})`;
+        if (zoom <= 0.5) return;
+        zoomElement.style.transform = `scale(${zoom -= 0.1})`;
     }
-});
-
-
-var dragItem = document.getElementById("board");
-var container = document.getElementById("container");
-
-var active = false;
-var currentX;
-var currentY;
-var initialX;
-var initialY;
-var xOffset = 0;
-var yOffset = 0;
-
-container.addEventListener("touchstart", dragStart);
-container.addEventListener("touchend", dragEnd);
-container.addEventListener("touchmove", drag);
-
-container.addEventListener("mousedown", dragStart);
-container.addEventListener("mouseup", dragEnd);
-container.addEventListener("mousemove", drag);
+}
 
 function dragStart(e) {
     if (e.type === "touchstart") {
-        initialX = e.touches[0].clientX - xOffset;
-        initialY = e.touches[0].clientY - yOffset;
+        initialX = e.touches[0].clientX - currentX;
+        initialY = e.touches[0].clientY - currentY;
     } else {
-        initialX = e.clientX - xOffset;
-        initialY = e.clientY - yOffset;
+        initialX = e.clientX - currentX;
+        initialY = e.clientY - currentY;
     }
 
-    if (e.target === dragItem) {
-        active = true;
-    }
+    dragging = true;
 }
 
 function dragEnd(e) {
     initialX = currentX;
     initialY = currentY;
-    active = false;
+    dragging = false;
 }
 
-function drag(e) {
-    if (active) {
+function move(e) {
+    if (dragging) {
         e.preventDefault();
 
         if (e.type === "touchmove") {
-            currentX = e.touches[0].clientX - initialX;
-            currentY = e.touches[0].clientY - initialY;
+            x = e.touches[0].clientX
+            y = e.touches[0].clientY
         } else {
-            currentX = e.clientX - initialX;
-            currentY = e.clientY - initialY;
+            x = e.clientX;
+            y = e.clientY;
         }
 
-        xOffset = currentX;
-        yOffset = currentY;
+        currentX = x - initialX;
+        currentY = y - initialY;
 
-        dragItem.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+        if (currentX >= 1000 || currentX <= -1000) return;
+        if (currentY >= 1000 || currentY <= -1000) return;
+        dragElement.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
     }
 }
+
+document.addEventListener("wheel", zoom_camera);
+
+const container = document.getElementById("container");
+
+container.addEventListener("touchstart", dragStart);
+container.addEventListener("touchend", dragEnd);
+container.addEventListener("touchmove", move);
+
+container.addEventListener("mousedown", dragStart);
+container.addEventListener("mouseup", dragEnd);
+container.addEventListener("mousemove", move);

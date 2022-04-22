@@ -1,8 +1,9 @@
 const express = require("express");
-
 const app = express();
+
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use(require('cookie-parser')());
 
 const pixelArray = [
     [13, 16, 16, 16, 16, 16, 16, 16, 16, 16],

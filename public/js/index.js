@@ -26,12 +26,20 @@ function renderPixels(pixelArray) {
             ctx.fillStyle = colors[pixelArray[y][x]];
             ctx.fillRect(x * 100, y * 100, 100, 100);
         }
-    }    
+    }
 }
 
 const colorElement = document.getElementById("colors");
 for (const color of Object.keys(colors)) {
-    colorElement.innerHTML += `<div style="background-color: ${colors[color]};" color="${color}"></div>`    
+    colorElement.innerHTML += `<div style="background-color: ${colors[color]};" color="${color}"></div>`
 }
 
 renderPixels(pixelArray);
+
+board.addEventListener('mousedown', (e) => {
+    const rect = board.getBoundingClientRect()
+    const x = (event.clientX - rect.left) / zoom
+    const y = (event.clientY - rect.top) / zoom
+    
+    console.log(~~(x / 100), ~~(y / 100))
+})

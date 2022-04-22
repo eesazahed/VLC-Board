@@ -5,7 +5,7 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 
 const pixelArray = [
-    [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+    [13, 16, 16, 16, 16, 16, 16, 16, 16, 16],
     [16, 16, 16, 16, 2, 16, 16, 16, 16, 16],
     [16, 2, 16, 16, 16, 16, 16, 16, 16, 16],
     [16, 2, 2, 2, 16, 2, 16, 16, 16, 16],
@@ -18,7 +18,11 @@ const pixelArray = [
 ]
 
 app.get("/", (req, res) => {
-    res.render("index", {pixelArray: JSON.stringify(pixelArray)});
+    res.render("index");
+});
+
+app.get("/board", (req, res) => {
+    res.render("board", {pixelArray: JSON.stringify(pixelArray)});
 });
 
 app.listen(8080, () => {

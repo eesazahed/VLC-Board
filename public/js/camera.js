@@ -1,8 +1,7 @@
 const zoomElement = document.getElementById("zoom-container");
-let zoom = 1;
-
 const dragElement = document.getElementById("board");
 
+let zoom = 1;
 let dragging = false;
 let currentX = 0;
 let currentY = 0;
@@ -53,7 +52,7 @@ function move(e) {
 
         currentX = (x - initialX) / zoom;
         currentY = (y - initialY) / zoom;
-        
+
         if (currentX >= 1000 || currentX <= -1000) return;
         if (currentY >= 1000 || currentY <= -1000) return;
         dragElement.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;

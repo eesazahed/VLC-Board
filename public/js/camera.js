@@ -62,8 +62,6 @@ function move(e) {
 
 document.addEventListener("wheel", zoom_camera);
 
-const container = document.getElementById("container");
-
 document.addEventListener("touchstart", dragStart);
 document.addEventListener("touchend", dragEnd);
 document.addEventListener("touchmove", move);

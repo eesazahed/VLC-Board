@@ -19,7 +19,11 @@ const pixelArray = [
 ]
 
 app.get("/", (req, res) => {
-    res.render("index");
+    if (req.cookies.token) {
+        res.render("dashboard");
+    } else {
+        res.render("login");
+    }
 });
 
 app.get("/board", (req, res) => {

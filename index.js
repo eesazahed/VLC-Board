@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/board", (req, res) => {
-    res.render("board", {pixelArray: JSON.stringify(pixelArray)});
+    res.render("board", { pixelArray: JSON.stringify(pixelArray) });
 });
 
 app.listen(8080, () => {

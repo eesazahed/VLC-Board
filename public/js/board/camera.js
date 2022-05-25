@@ -1,7 +1,9 @@
 const zoomElement = document.getElementById("zoom-container");
 const dragElement = document.getElementById("board");
 
-let zoom = 1;
+let zoom = window.screen.availHeight / 1472;
+zoomElement.style.transform = `scale(${zoom})`;
+
 let dragging = false;
 let currentX = 0;
 let currentY = 0;

@@ -38,8 +38,9 @@ renderPixels(pixelArray);
 
 board.addEventListener('mousedown', (e) => {
     const rect = board.getBoundingClientRect()
-    const x = (event.clientX - rect.left) / zoom
-    const y = (event.clientY - rect.top) / zoom
+    const x = (e.clientX - rect.left) / zoom
+    const y = (e.clientY - rect.top) / zoom
     
     console.log(~~(x / 100), ~~(y / 100))
+
 })

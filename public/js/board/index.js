@@ -1,4 +1,7 @@
 let selectedColor = "1";
+let selectedX = 0;
+let selectedY = 0;
+const coordElement = document.getElementById("pixel");
 
 const colors = {
     "1": "#ff4500",
@@ -42,11 +45,46 @@ for (const color of Object.keys(colors)) {
 
 renderPixels(pixelArray);
 
-board.addEventListener('mousedown', (e) => {
-    const rect = board.getBoundingClientRect()
-    const x = (e.clientX - rect.left) / zoom
-    const y = (e.clientY - rect.top) / zoom
+board.addEventListener('mouseup', (e) => {
+    const rect = board.getBoundingClientRect();
+
+    selectedX = ~~(((e.clientX - rect.left) / zoom) / 100);
+    selectedY = ~~(((e.clientY - rect.top) / zoom) / 100);
+    const x = selectedX * 100;
+    const y = selectedY * 100;
     
-    console.log(~~(x / 100), ~~(y / 100))
+    renderPixels(pixelArray);
+
+    ctx.fillStyle = "#000";
+    
+    ctx.fillRect(x, y, 30, 10);
+    ctx.fillRect(x, y, 10, 30);
+    
+    ctx.fillRect(x + 70, y, 30, 10);
+    ctx.fillRect(x + 90, y, 10, 30);
+
+    ctx.fillRect(x, y + 70, 10, 30);
+    ctx.fillRect(x, y + 90, 30, 10);
+
+    ctx.fillRect(x + 70, y + 90, 30, 10);
+    ctx.fillRect(x + 90, y + 70, 10, 30);
+
+
+    ctx.fillStyle = "#e0e2e4";
+    
+    ctx.fillRect(x + 10, y + 10, 20, 7);
+    ctx.fillRect(x + 10, y + 10, 7, 20);
+    
+    ctx.fillRect(x + 70, y + 10, 20, 7);
+    ctx.fillRect(x + 83, y + 10, 7, 20);
+
+    ctx.fillRect(x + 10, y + 70, 7, 20);
+    ctx.fillRect(x + 10, y + 83, 20, 7);
+
+    ctx.fillRect(x + 70, y + 83, 20, 7);
+    ctx.fillRect(x + 83, y + 70, 7, 20);
+
+    coordElement.classList.add("show")
+    coordElement.innerHTML = `${selectedX}, ${selectedY}`;
 
 })

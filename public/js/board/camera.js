@@ -1,5 +1,5 @@
 const zoomElement = document.getElementById("zoom-container");
-const dragElement = document.getElementById("board");
+const board = document.getElementById("board");
 
 let zoom = window.screen.availHeight / 1472;
 zoomElement.style.transform = `scale(${zoom})`;
@@ -33,11 +33,13 @@ function dragStart(e) {
         initialY = y - currentY * zoom;
 
         dragging = true;
+        board.classList.add("dragging");
     }
 }
 
 function dragEnd(e) {
     dragging = false;
+    board.classList.remove("dragging");
 }
 
 function move(e) {
@@ -57,16 +59,16 @@ function move(e) {
 
         if (currentX >= 1000 || currentX <= -1000) return;
         if (currentY >= 1000 || currentY <= -1000) return;
-        dragElement.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+        board.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
     }
 }
 
 document.addEventListener("wheel", zoom_camera);
 
-document.addEventListener("touchstart", dragStart);
+board.addEventListener("touchstart", dragStart);
 document.addEventListener("touchend", dragEnd);
-document.addEventListener("touchmove", move);
+board.addEventListener("touchmove", move);
 
-document.addEventListener("mousedown", dragStart);
+board.addEventListener("mousedown", dragStart);
 document.addEventListener("mouseup", dragEnd);
-document.addEventListener("mousemove", move);
+board.addEventListener("mousemove", move);

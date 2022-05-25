@@ -17,6 +17,18 @@ body {
     align-items: center;
 }
 
+#board {
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
+#board.dragging {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+}
+
 canvas {
     border: 1.2px solid black;
 }

@@ -3,6 +3,7 @@ const app = express();
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use(express.json());
 
 const pixelArray = [
     [13, 16, 16, 16, 16, 16, 16, 16, 16, 16],
@@ -19,6 +20,11 @@ const pixelArray = [
 
 app.get("/", (req, res) => {
     res.render("board", { pixelArray: JSON.stringify(pixelArray) });
+});
+
+app.post("/", (req, res) => {
+    console.log(req.json())
+    res.sendStatus(200);
 });
 
 app.listen(8080, () => {

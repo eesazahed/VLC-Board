@@ -1,3 +1,5 @@
+let selectedColor = "1";
+
 const colors = {
     "1": "#ff4500",
     "2": "#ffa800",
@@ -29,9 +31,13 @@ function renderPixels(pixelArray) {
     }
 }
 
+function updateColor(event) {
+    selectedColor = event.target.getAttribute("color");
+}
+
 const colorElement = document.getElementById("colors");
 for (const color of Object.keys(colors)) {
-    colorElement.innerHTML += `<div style="background-color: ${colors[color]};" color="${color}"></div>`
+    colorElement.innerHTML += `<input ${color == "1" ? 'checked=""' : ""} onchange="updateColor(event);" type="radio" name="color" style="background-color: ${colors[color]};" color="${color}"></div>`
 }
 
 renderPixels(pixelArray);

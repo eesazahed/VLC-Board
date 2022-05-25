@@ -19,14 +19,6 @@ const pixelArray = [
 ]
 
 app.get("/", (req, res) => {
-    if (req.cookies.token) {
-        res.render("dashboard");
-    } else {
-        res.render("login");
-    }
-});
-
-app.get("/board", (req, res) => {
     res.render("board", { pixelArray: JSON.stringify(pixelArray) });
 });
 

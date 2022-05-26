@@ -38,10 +38,47 @@ function updateColor(event) {
     selectedColor = event.target.getAttribute("color");
 }
 
-const colorElement = document.getElementById("colors");
-for (const color of Object.keys(colors)) {
-    colorElement.innerHTML += `<input ${color == "1" ? 'checked=""' : ""} onchange="updateColor(event);" type="radio" name="color" style="background-color: ${colors[color]};" color="${color}"></div>`
-}
+let googleUser = {};
+
+gapi.load("auth2", () => {
+  auth2 = gapi.auth2.init({
+    client_id:
+      "643889621133-5d35fgfaovrpo14rea6gv6oifssmd3jv.apps.googleusercontent.com",
+    cookiepolicy: "single_host_origin",
+  });
+
+  auth2.attachClickHandler(
+    document.getElementById("google-button"),
+    {},
+    googleUser => {
+      const id_token = googleUser.getAuthResponse().id_token;
+      const googleButton = document.getElementById("google-button");
+      googleButton.innerHTML = "↻ Verifying...";
+      
+      fetch(window.location.href, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: id_token,
+        }),
+      }).then(response => {
+        response.text().then(text => {
+          console.log(response.status)
+          if (response.status != 200) {
+            googleButton.innerHTML = response.text;
+          } else {
+            const colorElement = document.getElementById("colors");
+            for (const color of Object.keys(colors)) {
+                colorElement.innerHTML += `<input ${color == "1" ? 'checked=""' : ""} onchange="updateColor(event);" type="radio" name="color" style="background-color: ${colors[color]};" color="${color}"></div>`
+            };
+          }
+        });
+      });
+    }
+  );
+});
 
 renderPixels(pixelArray);
 
@@ -71,8 +108,8 @@ board.addEventListener('mouseup', (e) => {
     ctx.fillRect(x + 90, y + 70, 10, 30);
 
 
-    // ctx.fillStyle = "#e0e2e4";
-    ctx.fillStyle = "rgba(224, 226, 228, 0.5)";
+    ctx.fillStyle = "#e0e2e4";
+    // ctx.fillStyle = "rgba(224, 226, 228, 0.5)";
     
     ctx.fillRect(x + 10, y + 10, 20, 7);
     ctx.fillRect(x + 10, y + 10, 7, 20);

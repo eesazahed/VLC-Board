@@ -21,7 +21,6 @@ function zoom_camera(event) {
 }
 
 function dragStart(e) {
-    if (e.target !== colorElement) {
         if (e.type === "touchmove") {
             x = e.touches[0].clientX
             y = e.touches[0].clientY
@@ -34,7 +33,6 @@ function dragStart(e) {
 
         dragging = true;
         board.classList.add("dragging");
-    }
 }
 
 function dragEnd(e) {

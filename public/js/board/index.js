@@ -2,6 +2,7 @@ let selectedColor = "1";
 let selectedX = 0;
 let selectedY = 0;
 const coordElement = document.getElementById("pixel");
+const placeButton = document.getElementById("placePixel");
 
 const colors = {
     "1": "#ff4500",
@@ -123,5 +124,10 @@ board.addEventListener('mouseup', (e) => {
 
     coordElement.classList.add("show")
     coordElement.innerHTML = `${selectedX}, ${selectedY}`;
-
+    placeButton.classList.add("show");
 })
+
+
+function placePixel() {
+
+}

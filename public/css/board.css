@@ -77,5 +77,29 @@ canvas {
 }
 
 #pixel.show {
-    top: 10;
+    bottom: 10;
+}
+
+#placePixel {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    position: absolute;
+    bottom: -80;
+    width: 60px;
+    height: 25px;
+    background-color: white;
+    border-radius: 15px;
+    text-align: center;
+    transition: 1s all;
+    cursor: pointer;
+}
+
+#placePixel.show {
+    bottom: 100;
+}
+
+.center {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

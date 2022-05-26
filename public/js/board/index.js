@@ -56,6 +56,7 @@ board.addEventListener('mouseup', (e) => {
     renderPixels(pixelArray);
 
     ctx.fillStyle = "#000";
+    // ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
     
     ctx.fillRect(x, y, 30, 10);
     ctx.fillRect(x, y, 10, 30);
@@ -70,7 +71,8 @@ board.addEventListener('mouseup', (e) => {
     ctx.fillRect(x + 90, y + 70, 10, 30);
 
 
-    ctx.fillStyle = "#e0e2e4";
+    // ctx.fillStyle = "#e0e2e4";
+    ctx.fillStyle = "rgba(224, 226, 228, 0.5)";
     
     ctx.fillRect(x + 10, y + 10, 20, 7);
     ctx.fillRect(x + 10, y + 10, 7, 20);

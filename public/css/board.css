@@ -77,13 +77,14 @@ canvas {
 }
 
 #pixel.show {
-    bottom: 10;
+    top: 10;
 }
 
 #placePixel {
     box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
     position: absolute;
     bottom: -80;
+    z-index: 99999999999;
     width: 60px;
     height: 25px;
     background-color: white;
@@ -91,6 +92,10 @@ canvas {
     text-align: center;
     transition: 1s all;
     cursor: pointer;
+    -webkit-user-select: none; /* Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
 }
 
 #placePixel.show {

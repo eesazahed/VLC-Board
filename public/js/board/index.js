@@ -65,15 +65,13 @@ gapi.load("auth2", () => {
         }),
       }).then(response => {
         response.text().then(text => {
-          console.log(response.status)
-          if (response.status != 200) {
-            googleButton.innerHTML = response.text;
-          } else {
+          if (response.status == 200) {
+            googleButton.parentNode.removeChild(googleButton);
             const colorElement = document.getElementById("colors");
             for (const color of Object.keys(colors)) {
                 colorElement.innerHTML += `<input ${color == "1" ? 'checked=""' : ""} onchange="updateColor(event);" type="radio" name="color" style="background-color: ${colors[color]};" color="${color}"></div>`
             };
-          }
+          };
         });
       });
     }

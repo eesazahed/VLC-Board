@@ -81,7 +81,7 @@ gapi.load("auth2", () => {
 
 renderPixels(pixelArray);
 
-board.addEventListener('mouseup', (e) => {
+board.addEventListener('mousedown', (e) => {
     const rect = board.getBoundingClientRect();
 
     selectedX = ~~(((e.clientX - rect.left) / zoom) / 100);

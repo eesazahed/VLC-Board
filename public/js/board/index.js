@@ -1,6 +1,6 @@
 let selectedX = 0;
 let selectedY = 0;
-let id_token;
+let id_token, pixelArray;
 const coordElement = document.getElementById("pixel");
 const placeButton = document.getElementById("placePixel");
 
@@ -87,8 +87,6 @@ gapi.load("auth2", () => {
   );
 });
 
-renderPixels(pixelArray);
-
 function showPlaceButton() {
   if (selectedY && selectedX && selectedColor) {
     placeButton.classList.add("show");
@@ -142,6 +140,13 @@ board.addEventListener("mousedown", (e) => {
   renderCrosshair(selectedX, selectedY);
 });
 
+const socket = io();
+
+socket.on("canvasUpdate", function(event) {
+    pixelArray = event.pixelArray;
+    renderPixels(pixelArray);
+});
+
 function placePixel(event) {
   event.target.innerHTML = "↻";
   fetch("/placepixel", {
@@ -180,15 +185,3 @@ function generateCountdown(element, timestamp) {
     }
   }, 1000);
 }
-
-setInterval(() => {
-  fetch("/board").then((response) => {
-    response.json().then((json) => {
-      if (JSON.stringify(json["pixelArray"]) != JSON.stringify(pixelArray)) {
-        pixelArray = json["pixelArray"];
-        renderPixels(pixelArray);
-        renderCrosshair(selectedX, selectedY);
-      }
-    });
-  });
-}, 1000);

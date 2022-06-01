@@ -1,11 +1,20 @@
+// Express
 const express = require("express");
 const app = express();
-const { OAuth2Client } = require("google-auth-library");
-const googleClient = new OAuth2Client(process.env["GOOGLE_SECRET"]);
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json());
+
+// Socket
+const http = require("http");
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+
+// Gapi
+const { OAuth2Client } = require("google-auth-library");
+const googleClient = new OAuth2Client(process.env["GOOGLE_SECRET"]);
 
 const pixelArray = [
   [13, 16, 16, 16, 16, 16, 16, 16, 16, 16],
@@ -19,6 +28,7 @@ const pixelArray = [
   [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
   [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
 ];
+let oldCanvas = pixelArray;
 
 const verifyToken = async (idToken) => {
   // if missing ID token
@@ -42,11 +52,7 @@ const verifyToken = async (idToken) => {
 };
 
 app.get("/", (req, res) => {
-  res.render("board", { pixelArray: JSON.stringify(pixelArray) });
-});
-
-app.get("/board", (req, res) => {
-  res.send({ pixelArray: pixelArray });
+  res.render("board");
 });
 
 app.post("/", (req, res) => {
@@ -70,12 +76,25 @@ app.post("/placepixel", async (req, res) => {
   pixelArray[req.body.selectedY][req.body.selectedX] = parseInt(
     req.body.selectedColor
   );
-  // const cooldown = Date.now() + (Math.ceil(900 + (Math.random() * 300)) * 1000);
+  io.emit('canvasUpdate', { pixelArray: pixelArray });
+  
+//   const cooldown = Date.now() + (Math.ceil(900 + (Math.random() * 300)) * 1000);
   const cooldown = Date.now() + 100000;
 
   res.send({ cooldown: cooldown });
 });
 
-app.listen(8080, () => {
+io.on("connection", (socket) => {
+  socket.emit('canvasUpdate', { pixelArray: pixelArray });
+});
+
+setInterval(() => {
+    if (oldCanvas != pixelArray) {
+        oldCanvas = pixelArray;
+        io.emit('canvasUpdate', { pixelArray: oldCanvas });
+    }
+}, 1000);
+
+server.listen(8080, () => {
   console.log("Listening on port 8080\nhttp://localhost:8080");
 });

@@ -1,9 +1,11 @@
 {
   "dependencies": {
     "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.1",
     "ejs": "^3.0.2",
     "express.js": "^1.0.0",
     "google-auth-library": "^8.0.2",
+    "mongodb": "^4.6.0",
     "socket.io": "^4.5.1"
   },
   "devDependencies": {

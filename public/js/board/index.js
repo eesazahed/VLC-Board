@@ -150,7 +150,6 @@ socket.on("canvasUpdate", function(event) {
 });
 
 function placePixel(event) {
-  event.target.innerHTML = "↻";
   fetch("/placepixel", {
     method: "POST",
     headers: {
@@ -175,7 +174,7 @@ function generateCountdown(element, timestamp) {
     const timeRemaining = Math.ceil(
       (enableTime.getTime() - new Date().getTime()) / 1000
     );
-    const second = Math.round(timeRemaining / 60).toString();
+    const second = Math.ceil(timeRemaining / 60).toString();
     const minute = (timeRemaining % 60).toString();
 
     element.innerHTML = `${second.length == 1 ? "0" : ""}${second}:${

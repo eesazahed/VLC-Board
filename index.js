@@ -1,3 +1,7 @@
+// Load .env
+const dotenv = require("dotenv")
+dotenv.config()
+
 // Express
 const express = require("express");
 const app = express();
@@ -15,6 +19,17 @@ const io = new Server(server);
 // Gapi
 const { OAuth2Client } = require("google-auth-library");
 const googleClient = new OAuth2Client(process.env["GOOGLE_SECRET"]);
+
+// MongoDB
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const client = new MongoClient(process.env["MONGO_URL"], { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+client.connect(err => {
+    if (err) {
+        console.log(err);
+    };
+});
+
+const usersCollection = client.db("board").collection("users");
 
 const pixelArray = [
   [13, 16, 16, 16, 16, 16, 16, 16, 16, 16],
@@ -55,14 +70,17 @@ app.get("/", (req, res) => {
   res.render("board");
 });
 
-app.post("/", (req, res) => {
-  verifyToken(req.body.token)
-    .then((payload) => {
-      res.send(payload);
-    })
-    .catch((err) => {
-      res.status(405).send(err);
-    });
+app.post("/", async (req, res) => {
+    let payload;
+    
+    try {
+        payload = await verifyToken(req.body.token);
+    } catch (err) {
+        console.log(err)
+        return res.status(405).send(err);
+    }
+
+    res.send(payload);
 });
 
 app.post("/placepixel", async (req, res) => {
@@ -70,7 +88,7 @@ app.post("/placepixel", async (req, res) => {
   try {
     payload = await verifyToken(req.body.token);
   } catch (err) {
-    res.status(405).send(err);
+    return res.status(405).send(err);
   }
 
   pixelArray[req.body.selectedY][req.body.selectedX] = parseInt(
@@ -84,7 +102,7 @@ app.post("/placepixel", async (req, res) => {
   res.send({ cooldown: cooldown });
 });
 
-io.on("connection", (socket) => {
+io.on("connection", socket => {
   socket.emit('canvasUpdate', { pixelArray: pixelArray });
 });
 

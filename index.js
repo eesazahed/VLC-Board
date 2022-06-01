@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const {
-  OAuth2Client
+    OAuth2Client
 } = require("google-auth-library");
 const googleClient = new OAuth2Client(process.env["GOOGLE_SECRET"]);
 
@@ -23,37 +23,50 @@ const pixelArray = [
     [16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
 ]
 
-app.get("/", (req, res) => {
-    res.render("board", { pixelArray: JSON.stringify(pixelArray) });
-});
+const verifyToken = async (idToken) => {
+    // if missing ID token
+    if (!idToken) {
+        throw "Missing token";
+    }
 
-app.post("/", (req, res) => {
-  // if missing ID token
-  if (!req.body.token) { 
-    res.statusCode = 405;
-    return res.send("Missing token");
-  }
-  
-  const verify = async () => {
     // verify legitimacy of ID token
     const ticket = await googleClient.verifyIdToken({
-      idToken: req.body.token,
-      audience: process.env["GOOGLE_SECRET"],
+        idToken: idToken,
+        audience: process.env["GOOGLE_SECRET"],
     });
 
     // get user payload
     const payload = ticket.getPayload();
     if (payload.hd !== "virtuallearning.ca") {
-      res.statusCode = 405;
-      return res.send("You must sign in with your VLC (@virtuallearning.ca) account.");
+        throw "You must sign in with your VLC (@virtuallearning.ca) account.";
     };
 
-    res.send(payload);
-  }
+    return payload;
+};
 
-  verify(); // call async function
+app.get("/", (req, res) => {
+    res.render("board", { pixelArray: JSON.stringify(pixelArray) });
 });
 
+app.post("/", (req, res) => {
+    verifyToken(req.body.token)
+        .then(payload => {
+            res.send(payload);
+        }).catch(err => {
+            res.status(405).send(err);
+        });
+});
+
+app.post("/placepixel", async (req, res) => {
+    let payload;
+    try {
+      payload = await verifyToken(req.body.token);
+    } catch (err) {
+      res.status(405).send(err);
+    }
+    console.log(payload)
+    console.log(req.body);
+});
 
 app.listen(8080, () => {
     console.log("Listening on port 8080\nhttp://localhost:8080");

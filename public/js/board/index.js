@@ -1,6 +1,6 @@
-let selectedColor = "1";
 let selectedX = 0;
 let selectedY = 0;
+let id_token;
 const coordElement = document.getElementById("pixel");
 const placeButton = document.getElementById("placePixel");
 
@@ -23,6 +23,9 @@ const colors = {
     "16": "#ffffff"
 }
 
+const keys = Object.keys(colors);
+let selectedColor;
+
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext('2d');
 
@@ -37,49 +40,55 @@ function renderPixels(pixelArray) {
 
 function updateColor(event) {
     selectedColor = event.target.getAttribute("color");
+    showPlaceButton()
 }
 
 let googleUser = {};
 
 gapi.load("auth2", () => {
-  auth2 = gapi.auth2.init({
-    client_id:
-      "643889621133-5d35fgfaovrpo14rea6gv6oifssmd3jv.apps.googleusercontent.com",
-    cookiepolicy: "single_host_origin",
-  });
+    auth2 = gapi.auth2.init({
+        client_id: "643889621133-5d35fgfaovrpo14rea6gv6oifssmd3jv.apps.googleusercontent.com",
+        cookiepolicy: "single_host_origin",
+    });
 
-  auth2.attachClickHandler(
-    document.getElementById("google-button"),
-    {},
-    googleUser => {
-      const id_token = googleUser.getAuthResponse().id_token;
-      const googleButton = document.getElementById("google-button");
-      googleButton.innerHTML = "↻ Verifying...";
-      
-      fetch(window.location.href, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: id_token,
-        }),
-      }).then(response => {
-        response.text().then(text => {
-          if (response.status == 200) {
-            googleButton.parentNode.removeChild(googleButton);
-            const colorElement = document.getElementById("colors");
-            for (const color of Object.keys(colors)) {
-                colorElement.innerHTML += `<input ${color == "1" ? 'checked=""' : ""} onchange="updateColor(event);" type="radio" name="color" style="background-color: ${colors[color]};" color="${color}"></div>`
-            };
-          };
-        });
-      });
-    }
-  );
+    auth2.attachClickHandler(
+        document.getElementById("google-button"), {},
+        googleUser => {
+            id_token = googleUser.getAuthResponse().id_token;
+            const googleButton = document.getElementById("google-button");
+            googleButton.innerHTML = "↻ Verifying...";
+
+            fetch(window.location.href, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    token: id_token,
+                }),
+            }).then(response => {
+                response.text().then(text => {
+                    if (response.status == 200) {
+                        console.log(text)
+                        googleButton.parentNode.removeChild(googleButton);
+                        const colorElement = document.getElementById("colors");
+                        for (const color of Object.keys(colors)) {
+                            colorElement.innerHTML += `<input ${color == selectedColor ? 'checked=""' : ""} onchange="updateColor(event);" type="radio" name="color" style="background-color: ${colors[color]};" color="${color}"></div>`
+                        };
+                    };
+                });
+            });
+        }
+    );
 });
 
 renderPixels(pixelArray);
+
+function showPlaceButton() {
+    if (selectedY && selectedX && selectedColor) {
+        placeButton.classList.add("show");
+    }
+}
 
 board.addEventListener('mousedown', (e) => {
     const rect = board.getBoundingClientRect();
@@ -88,15 +97,14 @@ board.addEventListener('mousedown', (e) => {
     selectedY = ~~(((e.clientY - rect.top) / zoom) / 100);
     const x = selectedX * 100;
     const y = selectedY * 100;
-    
+
     renderPixels(pixelArray);
 
     ctx.fillStyle = "#000";
-    // ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-    
+
     ctx.fillRect(x, y, 30, 10);
     ctx.fillRect(x, y, 10, 30);
-    
+
     ctx.fillRect(x + 70, y, 30, 10);
     ctx.fillRect(x + 90, y, 10, 30);
 
@@ -108,11 +116,10 @@ board.addEventListener('mousedown', (e) => {
 
 
     ctx.fillStyle = "#e0e2e4";
-    // ctx.fillStyle = "rgba(224, 226, 228, 0.5)";
-    
+
     ctx.fillRect(x + 10, y + 10, 20, 7);
     ctx.fillRect(x + 10, y + 10, 7, 20);
-    
+
     ctx.fillRect(x + 70, y + 10, 20, 7);
     ctx.fillRect(x + 83, y + 10, 7, 20);
 
@@ -124,10 +131,27 @@ board.addEventListener('mousedown', (e) => {
 
     coordElement.classList.add("show")
     coordElement.innerHTML = `${selectedX}, ${selectedY}`;
-    placeButton.classList.add("show");
+    showPlaceButton();
 })
 
 
 function placePixel() {
-
+    fetch("/placepixel", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            token: id_token,
+            selectedX: selectedX,
+            selectedY: selectedY,
+            selectedColor: selectedColor
+        }),
+    }).then(response => {
+        response.text().then(text => {
+            if (response.status == 200) {
+                console.log(text)
+            };
+        });
+    });
 }

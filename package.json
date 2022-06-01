@@ -4,8 +4,10 @@
     "ejs": "^3.0.2",
     "express.js": "^1.0.0",
     "google-auth-library": "^8.0.2",
-    "nodemon": "^2.0.16"
   },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
   "scripts": {
     "start": "nodemon ."
   }

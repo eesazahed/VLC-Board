@@ -1,29 +1,32 @@
 <html>
-    <head>
-        <title>r/Place - Board</title>
-        <link rel="stylesheet" type="text/css" href="css/board.css">
-        <script src="https://apis.google.com/js/platform.js"></script>
-        <script src="js/board/index.js" defer></script>
-        <script src="js/board/camera.js" defer></script>
-        <meta name="google-signin-client_id" content="643889621133-5d35fgfaovrpo14rea6gv6oifssmd3jv.apps.googleusercontent.com">
-        <script>
-            const pixelArray = <%- pixelArray %>;
-        </script>
-    </head>
+  <head>
+    <title>r/Place - Board</title>
+    <link rel="stylesheet" type="text/css" href="css/board.css" />
+    <script src="https://apis.google.com/js/platform.js"></script>
+    <script src="js/board/index.js" defer></script>
+    <script src="js/board/camera.js" defer></script>
+    <meta
+      name="google-signin-client_id"
+      content="643889621133-5d35fgfaovrpo14rea6gv6oifssmd3jv.apps.googleusercontent.com"
+    />
+    <script>
+      let pixelArray = <%- pixelArray %>;
+    </script>
+  </head>
 
-    <body>
-        <div id="container">
-            <p id="pixel"></p>
-            <div id="zoom-container">
-                <canvas width="1000" height="1000" id="board"></canvas>
-            </div>
-        </div>
+  <body>
+    <div id="container">
+      <p id="pixel"></p>
+      <div id="zoom-container">
+        <canvas width="1000" height="1000" id="board"></canvas>
+      </div>
+    </div>
 
-        <div id="colors">
-            <button id="google-button">Sign in</button>
-        </div>
-        <div class="center">
-            <p id="placePixel" onclick="placePixel()">✓</p>
-        </div>
-    </body>
+    <div id="colors">
+      <button id="google-button">Sign in</button>
+    </div>
+    <div class="center">
+      <p id="placePixel" onclick="placePixel(event)">✓</p>
+    </div>
+  </body>
 </html>

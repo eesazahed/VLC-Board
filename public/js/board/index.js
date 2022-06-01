@@ -58,7 +58,8 @@ gapi.load("auth2", () => {
     (googleUser) => {
       id_token = googleUser.getAuthResponse().id_token;
       const googleButton = document.getElementById("google-button");
-      googleButton.innerHTML = "↻ Verifying...";
+      const colorElement = googleButton.parentNode;
+      colorElement.innerHTML = "Verifying...";
 
       fetch(window.location.href, {
         method: "POST",
@@ -71,8 +72,7 @@ gapi.load("auth2", () => {
       }).then((response) => {
         response.text().then((text) => {
           if (response.status == 200) {
-            googleButton.parentNode.removeChild(googleButton);
-            const colorElement = document.getElementById("colors");
+            colorElement.innerHTML = "";
             for (const color of Object.keys(colors)) {
               colorElement.innerHTML += `<input ${
                 color == selectedColor ? 'checked=""' : ""
@@ -80,6 +80,8 @@ gapi.load("auth2", () => {
                 colors[color]
               };" color="${color}"></div>`;
             }
+          } else {
+            colorElement.innerHTML = text;
           }
         });
       });

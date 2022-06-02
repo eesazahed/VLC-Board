@@ -14,7 +14,7 @@ function zoom_camera(event) {
     if (zoom >= 1.6) return;
     zoomElement.style.transform = `scale(${(zoom += 0.1)})`;
   } else {
-    if (zoom <= 0.5) return;
+    if (zoom <= 0.4) return;
     zoomElement.style.transform = `scale(${(zoom -= 0.1)})`;
   }
 }

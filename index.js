@@ -120,7 +120,7 @@ app.post("/placepixel", async (req, res) => {
 });
 
 app.get("/about", (req, res) => {
-  res.render("about");
+  res.redirect("https://en.wikipedia.org/wiki/R/place");
 })
 
 io.on("connection", socket => {

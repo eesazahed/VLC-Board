@@ -138,3 +138,8 @@ canvas {
   align-items: center;
   justify-content: center;
 }
+
+.red {
+  transition: 2s all;
+  background-color: #FF0000 !important;
+}

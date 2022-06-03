@@ -32,18 +32,18 @@ client.connect(err => {
 const usersCollection = client.db("board").collection("users");
 
 const pixelArray = [
-  [13, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-  [16, 16, 16, 16, 2, 16, 16, 16, 16, 16],
-  [16, 2, 16, 16, 16, 16, 16, 16, 16, 16],
-  [16, 2, 2, 2, 16, 2, 16, 16, 16, 16],
-  [16, 2, 16, 2, 16, 13, 16, 16, 16, 16],
+  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
   [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
   [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
   [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
   [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
   [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
 ];
-let oldCanvas = pixelArray;
+let oldCanvas = JSON.stringify(pixelArray);
 
 const verifyToken = async (idToken) => {
   // if missing ID token
@@ -95,22 +95,36 @@ app.post("/", async (req, res) => {
 });
 
 app.post("/placepixel", async (req, res) => {
-  let payload;
+  let userId;
   try {
-    payload = await verifyToken(req.body.token);
+    userId = await verifyToken(req.body.token);
   } catch (err) {
     return res.status(405).send(err);
   }
 
-  pixelArray[req.body.selectedY][req.body.selectedX] = parseInt(
-    req.body.selectedColor
-  );
-  io.emit('canvasUpdate', { pixelArray: pixelArray });
-  
-//   const cooldown = Date.now() + (Math.ceil(900 + (Math.random() * 300)) * 1000);
-  const cooldown = Date.now() + 100000;
+  const user = await usersCollection.findOne({id: userId});
+  let cooldown;
 
-  res.send({ cooldown: cooldown });
+  if (user) {
+    cooldown = user.cooldown;
+  } else {
+    return res.status(405).send("Not a registered user!");
+  };
+
+  if (cooldown < Date.now()) {
+    pixelArray[req.body.selectedY][req.body.selectedX] = parseInt(
+      req.body.selectedColor
+    );
+  
+    io.emit('pixelUpdate', { x: req.body.selectedX, y: req.body.selectedY, color: req.body.selectedColor, pixelArray: pixelArray });
+
+//   const cooldown = Date.now() + (Math.ceil(900 + (Math.random() * 300)) * 1000);
+    const cooldown = Date.now() + 100000;
+    await usersCollection.updateOne({id: userId}, {$set: {id: userId, cooldown: cooldown}});
+    res.send({ cooldown: cooldown });
+  } else {
+    return res.status(403).send({cooldown: cooldown});
+  }
 });
 
 io.on("connection", socket => {

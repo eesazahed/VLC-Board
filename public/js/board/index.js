@@ -1,6 +1,6 @@
 let selectedX = 0;
 let selectedY = 0;
-let id_token, pixelArray;
+let id_token, pixelArray, interval;
 const coordElement = document.getElementById("pixel");
 const placeButton = document.getElementById("placePixel");
 
@@ -38,8 +38,14 @@ function renderPixels(pixelArray) {
   }
 }
 
+function renderPixel(x, y, color) {
+  ctx.fillStyle = colors[color];
+  ctx.fillRect(x * 100, y * 100, 100, 100);
+}
+
 function updateColor(event) {
   selectedColor = event.target.getAttribute("color");
+  new Audio('audio/Select Color.mp3').play();
   showPlaceButton();
 }
 
@@ -70,7 +76,6 @@ gapi.load("auth2", () => {
           token: id_token,
         }),
       }).then((response) => {
-        response.text().then((text) => {
           if (response.status == 200) {
             colorElement.innerHTML = "";
             for (const color of Object.keys(colors)) {
@@ -80,26 +85,32 @@ gapi.load("auth2", () => {
                 colors[color]
               };" color="${color}"></div>`;
             }
+            response.json().then((json) => {
+              generateCountdown(placeButton, json.cooldown);
+            });
           } else {
-            colorElement.innerHTML = text;
+            response.text().then((text) => {
+              colorElement.innerHTML = text;
+            });
           }
-        });
       });
     }
   );
 });
 
 function showPlaceButton() {
-  if (selectedY && selectedX && selectedColor) {
+  if (typeof selectedX !== "undefined" && selectedColor) {
     placeButton.classList.add("show");
   }
 }
 
 function renderCrosshair(selectedX, selectedY) {
+  if (selectedColor) {
+    new Audio('audio/Select Tile & Open Color Select.mp3').play();
+  }
+
   const x = selectedX * 100;
   const y = selectedY * 100;
-
-  renderPixels(pixelArray);
 
   ctx.fillStyle = "#000";
 
@@ -131,11 +142,16 @@ function renderCrosshair(selectedX, selectedY) {
 
   coordElement.classList.add("show");
   coordElement.innerHTML = `${selectedX}, ${selectedY}`;
+
   showPlaceButton();
 }
 
 board.addEventListener("mousedown", (e) => {
   const rect = board.getBoundingClientRect();
+
+  if (typeof selectedX !== "undefined") {
+    renderPixel(selectedX, selectedY, pixelArray[selectedY][selectedX]);
+  }
 
   selectedX = ~~((e.clientX - rect.left) / zoom / 100);
   selectedY = ~~((e.clientY - rect.top) / zoom / 100);
@@ -144,10 +160,16 @@ board.addEventListener("mousedown", (e) => {
 
 const socket = io();
 
+socket.on("pixelUpdate", function(event) {
+    pixelArray = event.pixelArray;
+    renderPixel(event.x, event.y, event.color);
+});
+
 socket.on("canvasUpdate", function(event) {
     pixelArray = event.pixelArray;
-    renderPixels(pixelArray);
+    renderPixels(event.pixelArray);
 });
+
 
 function placePixel(event) {
   fetch("/placepixel", {
@@ -162,27 +184,46 @@ function placePixel(event) {
       selectedColor: selectedColor,
     }),
   }).then((response) => {
+    if (response.status == 403) {
+      placeButton.classList.add("red");
+      setTimeout(() => {placeButton.classList.remove("red")}, 2000)
+    } else if (response.status == 200) {
+      new Audio('audio/Pixel Placed.mp3').play();
+    }
     response.json().then((json) => {
-      generateCountdown(event.target, json.cooldown);
+      generateCountdown(placeButton, json.cooldown);
     });
   });
 }
 
 function generateCountdown(element, timestamp) {
   const enableTime = new Date(timestamp);
-  const interval = setInterval(() => {
+  if (interval) {
+    clearInterval(interval);
+  }
+  const timeRemaining = Math.ceil(
+    (enableTime.getTime() - new Date().getTime()) / 1000
+  );
+  if (1 > timeRemaining) {
+    return;
+  }
+
+  interval = setInterval(() => {
     const timeRemaining = Math.ceil(
       (enableTime.getTime() - new Date().getTime()) / 1000
     );
-    const second = Math.ceil(timeRemaining / 60).toString();
-    const minute = (timeRemaining % 60).toString();
+    
+    const minute = ~~(timeRemaining / 59.9).toString();
+    const second = (timeRemaining % 60).toString();
 
-    element.innerHTML = `${second.length == 1 ? "0" : ""}${second}:${
-      minute.length == 1 ? "0" : ""
-    }${minute}`;
+    element.innerHTML = `${minute.length == 1 ? "0" : ""}${minute}:${
+      second.length == 1 ? "0" : ""
+    }${second}`;
     if (1 > timeRemaining) {
       element.innerHTML = "✓";
       clearInterval(interval);
+      interval = undefined;
+      new Audio('audio/Pixel Ready.mp3').play();
     }
   }, 1000);
 }

@@ -123,19 +123,23 @@ app.get("/about", (req, res) => {
 })
 
 io.on("connection", socket => {
-  boardCollection.findOne({}, {sort:{$natural:-1}}).then(board => {
-    pixelArray = board.pixelArray
-  });
+  if (boardCollection) {
+    boardCollection.findOne({}, {sort:{$natural:-1}}).then(board => {
+      pixelArray = board.pixelArray
+    });
+  }
 
   socket.emit('canvasUpdate', { pixelArray: pixelArray });
 });
 
 setInterval(() => {
-  boardCollection.findOne({pixelArray: pixelArray}).then(board => {
-    if (!board) {
-      boardCollection.insertOne({pixelArray: pixelArray, timestamp: Date.now()})
-    }
-  })
+  if (boardCollection) {
+     boardCollection.findOne({pixelArray: pixelArray}).then(board => {
+        if (!board) {
+          boardCollection.insertOne({pixelArray: pixelArray, timestamp: Date.now()})
+        }
+      }) 
+  }
 }, 1000)
 
 server.listen(8080, () => {

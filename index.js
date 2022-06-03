@@ -110,8 +110,7 @@ app.post("/placepixel", async (req, res) => {
   
     io.emit('pixelUpdate', { x: req.body.selectedX, y: req.body.selectedY, color: req.body.selectedColor, pixelArray: pixelArray });
 
-//   const cooldown = Date.now() + (Math.ceil(900 + (Math.random() * 300)) * 1000);
-    const cooldown = Date.now()// + 100000;
+    const cooldown = Date.now() + 100000;
     await usersCollection.updateOne({id: userId}, {$set: {id: userId, cooldown: cooldown}});
     res.send({ cooldown: cooldown });
   } else {

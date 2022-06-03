@@ -23,27 +23,19 @@ const googleClient = new OAuth2Client(process.env["GOOGLE_SECRET"]);
 // MongoDB
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const client = new MongoClient(process.env["MONGO_URL"], { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+let pixelArray, boardCollection;
+const usersCollection = client.db("board").collection("users");
+
 client.connect(err => {
     if (err) {
         console.log(err);
     };
+
+    boardCollection = client.db("board").collection("pixels");
+    boardCollection.findOne({}, {sort:{$natural:-1}}).then(board => {
+      pixelArray = board.pixelArray
+    });
 });
-
-const usersCollection = client.db("board").collection("users");
-
-const pixelArray = [
-  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-  [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-];
-let oldCanvas = JSON.stringify(pixelArray);
 
 const verifyToken = async (idToken) => {
   // if missing ID token
@@ -119,7 +111,7 @@ app.post("/placepixel", async (req, res) => {
     io.emit('pixelUpdate', { x: req.body.selectedX, y: req.body.selectedY, color: req.body.selectedColor, pixelArray: pixelArray });
 
 //   const cooldown = Date.now() + (Math.ceil(900 + (Math.random() * 300)) * 1000);
-    const cooldown = Date.now() + 100000;
+    const cooldown = Date.now()// + 100000;
     await usersCollection.updateOne({id: userId}, {$set: {id: userId, cooldown: cooldown}});
     res.send({ cooldown: cooldown });
   } else {
@@ -127,9 +119,25 @@ app.post("/placepixel", async (req, res) => {
   }
 });
 
+app.get("/about", (req, res) => {
+  res.render("about");
+})
+
 io.on("connection", socket => {
+  boardCollection.findOne({}, {sort:{$natural:-1}}).then(board => {
+    pixelArray = board.pixelArray
+  });
+
   socket.emit('canvasUpdate', { pixelArray: pixelArray });
 });
+
+setInterval(() => {
+  boardCollection.findOne({pixelArray: pixelArray}).then(board => {
+    if (!board) {
+      boardCollection.insertOne({pixelArray: pixelArray, timestamp: Date.now()})
+    }
+  })
+}, 1000)
 
 server.listen(8080, () => {
   console.log("Listening on port 8080\nhttp://localhost:8080");

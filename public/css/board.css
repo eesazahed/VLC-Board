@@ -45,6 +45,10 @@ body {
   align-items: center;
 }
 
+#zoom-container {
+  transition: 0.5s ease all;
+}
+
 #board {
   cursor: grab;
   cursor: -moz-grab;

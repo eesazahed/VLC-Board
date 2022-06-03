@@ -11,7 +11,7 @@ let initialX, initialY;
 
 function zoom_camera(event) {
   if (event.deltaY < 0) {
-    if (zoom >= 1.6) return;
+    if (zoom >= 2.6) return;
     zoomElement.style.transform = `scale(${(zoom += 0.1)})`;
   } else {
     if (zoom <= 0.4) return;
@@ -64,8 +64,8 @@ document.addEventListener("wheel", zoom_camera);
 
 board.addEventListener("touchstart", dragStart);
 document.addEventListener("touchend", dragEnd);
-board.addEventListener("touchmove", move);
+document.addEventListener("touchmove", move);
 
 board.addEventListener("mousedown", dragStart);
 document.addEventListener("mouseup", dragEnd);
-board.addEventListener("mousemove", move);
+document.addEventListener("mousemove", move);

@@ -33,14 +33,14 @@ function renderPixels(pixelArray) {
   for (let y = 0; y < pixelArray.length; y += 1) {
     for (let x = 0; x < pixelArray[y].length; x += 1) {
       ctx.fillStyle = colors[pixelArray[y][x]];
-      ctx.fillRect(x * 100, y * 100, 100, 100);
+      ctx.fillRect(x * 10, y * 10, 10, 10);
     }
   }
 }
 
 function renderPixel(x, y, color) {
   ctx.fillStyle = colors[color];
-  ctx.fillRect(x * 100, y * 100, 100, 100);
+  ctx.fillRect(x * 10, y * 10, 10, 10);
 }
 
 function updateColor(event) {
@@ -109,36 +109,36 @@ function renderCrosshair(selectedX, selectedY) {
     new Audio('audio/Select Tile & Open Color Select.mp3').play();
   }
 
-  const x = selectedX * 100;
-  const y = selectedY * 100;
+  const x = selectedX * 10;
+  const y = selectedY * 10;
 
   ctx.fillStyle = "#000";
 
-  ctx.fillRect(x, y, 30, 10);
-  ctx.fillRect(x, y, 10, 30);
+  ctx.fillRect(x, y, 3, 1);
+  ctx.fillRect(x, y, 1, 3);
 
-  ctx.fillRect(x + 70, y, 30, 10);
-  ctx.fillRect(x + 90, y, 10, 30);
+  ctx.fillRect(x + 7, y, 3, 1);
+  ctx.fillRect(x + 9, y, 1, 3);
 
-  ctx.fillRect(x, y + 70, 10, 30);
-  ctx.fillRect(x, y + 90, 30, 10);
+  ctx.fillRect(x, y + 7, 1, 3);
+  ctx.fillRect(x, y + 9, 3, 1);
 
-  ctx.fillRect(x + 70, y + 90, 30, 10);
-  ctx.fillRect(x + 90, y + 70, 10, 30);
+  ctx.fillRect(x + 7, y + 9, 3, 1);
+  ctx.fillRect(x + 9, y + 7, 1, 3);
 
-  ctx.fillStyle = "#e0e2e4";
+  // ctx.fillStyle = "#e0e2e4";
 
-  ctx.fillRect(x + 10, y + 10, 20, 7);
-  ctx.fillRect(x + 10, y + 10, 7, 20);
+  // ctx.fillRect(x + 10, y + 10, 20, 7);
+  // ctx.fillRect(x + 10, y + 10, 7, 20);
 
-  ctx.fillRect(x + 70, y + 10, 20, 7);
-  ctx.fillRect(x + 83, y + 10, 7, 20);
+  // ctx.fillRect(x + 70, y + 10, 20, 7);
+  // ctx.fillRect(x + 83, y + 10, 7, 20);
 
-  ctx.fillRect(x + 10, y + 70, 7, 20);
-  ctx.fillRect(x + 10, y + 83, 20, 7);
+  // ctx.fillRect(x + 10, y + 70, 7, 20);
+  // ctx.fillRect(x + 10, y + 83, 20, 7);
 
-  ctx.fillRect(x + 70, y + 83, 20, 7);
-  ctx.fillRect(x + 83, y + 70, 7, 20);
+  // ctx.fillRect(x + 70, y + 83, 20, 7);
+  // ctx.fillRect(x + 83, y + 70, 7, 20);
 
   coordElement.classList.add("show");
   coordElement.innerHTML = `${selectedX}, ${selectedY}`;
@@ -153,8 +153,8 @@ board.addEventListener("mousedown", (e) => {
     renderPixel(selectedX, selectedY, pixelArray[selectedY][selectedX]);
   }
 
-  selectedX = ~~((e.clientX - rect.left) / zoom / 100);
-  selectedY = ~~((e.clientY - rect.top) / zoom / 100);
+  selectedX = ~~((e.clientX - rect.left) / zoom / 10);
+  selectedY = ~~((e.clientY - rect.top) / zoom / 10);
   renderCrosshair(selectedX, selectedY);
 });
 
@@ -202,7 +202,7 @@ function generateCountdown(element, timestamp) {
     clearInterval(interval);
   }
   const timeRemaining = Math.ceil(
-    (enableTime.getTime() - new Date().getTime()) / 1000
+    (enableTime.getTime() - new Date().getTime()) / 100
   );
   if (1 > timeRemaining) {
     return;
@@ -210,7 +210,7 @@ function generateCountdown(element, timestamp) {
 
   interval = setInterval(() => {
     const timeRemaining = Math.ceil(
-      (enableTime.getTime() - new Date().getTime()) / 1000
+      (enableTime.getTime() - new Date().getTime()) / 100
     );
     
     const minute = ~~(timeRemaining / 59.9).toString();
@@ -225,5 +225,5 @@ function generateCountdown(element, timestamp) {
       interval = undefined;
       new Audio('audio/Pixel Ready.mp3').play();
     }
-  }, 1000);
+  }, 100);
 }

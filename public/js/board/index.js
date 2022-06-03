@@ -126,19 +126,19 @@ function renderCrosshair(selectedX, selectedY) {
   ctx.fillRect(x + 7, y + 9, 3, 1);
   ctx.fillRect(x + 9, y + 7, 1, 3);
 
-  // ctx.fillStyle = "#e0e2e4";
+  ctx.fillStyle = "#e0e2e4";
 
-  // ctx.fillRect(x + 10, y + 10, 20, 7);
-  // ctx.fillRect(x + 10, y + 10, 7, 20);
+  ctx.fillRect(x + 1, y + 1, 2, 0.7);
+  ctx.fillRect(x + 1, y + 1, 0.7, 2);
 
-  // ctx.fillRect(x + 70, y + 10, 20, 7);
-  // ctx.fillRect(x + 83, y + 10, 7, 20);
+  ctx.fillRect(x + 7, y + 1, 2, 0.7);
+  ctx.fillRect(x + 8, y + 1, 0.7, 2);
 
-  // ctx.fillRect(x + 10, y + 70, 7, 20);
-  // ctx.fillRect(x + 10, y + 83, 20, 7);
+  ctx.fillRect(x + 1, y + 7, 0.7, 2);
+  ctx.fillRect(x + 1, y + 8, 2, 0.7);
 
-  // ctx.fillRect(x + 70, y + 83, 20, 7);
-  // ctx.fillRect(x + 83, y + 70, 7, 20);
+  ctx.fillRect(x + 7, y + 8, 2, 0.7);
+  ctx.fillRect(x + 8, y + 7, 0.7, 2);
 
   coordElement.classList.add("show");
   coordElement.innerHTML = `${selectedX}, ${selectedY}`;
@@ -210,7 +210,7 @@ function generateCountdown(element, timestamp) {
 
   interval = setInterval(() => {
     const timeRemaining = Math.ceil(
-      (enableTime.getTime() - new Date().getTime()) / 100
+      (enableTime.getTime() - new Date().getTime()) / 1000
     );
     
     const minute = ~~(timeRemaining / 59.9).toString();
@@ -225,5 +225,5 @@ function generateCountdown(element, timestamp) {
       interval = undefined;
       new Audio('audio/Pixel Ready.mp3').play();
     }
-  }, 100);
+  }, 1000);
 }

@@ -11,7 +11,7 @@ let initialX, initialY;
 
 function zoom_camera(event) {
   if (event.deltaY < 0) {
-    if (zoom >= 5) return;
+    if (zoom >= 4.5) return;
     zoomElement.style.transform = `scale(${(zoom += 0.1)})`;
   } else {
     if (zoom <= 0.4) return;

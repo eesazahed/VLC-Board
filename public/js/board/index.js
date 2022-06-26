@@ -5,13 +5,13 @@ const coordElement = document.getElementById("pixel");
 const placeButton = document.getElementById("placePixel");
 
 const colors = {
-  1: "#ff4500",
-  2: "#ffa800",
-  3: "#ffd635",
-  4: "#00a368",
-  5: "#7eed56",
+  1: "#e50000",
+  2: "#ff4500",
+  3: "#e5d900",
+  4: "#02be01",
+  5: "#94e044",
   6: "#2450a4",
-  7: "#3690ea",
+  7: "#2196F3",
   8: "#51e9f4",
   9: "#811e9f",
   10: "#b44ac0",
@@ -43,60 +43,60 @@ function renderPixel(x, y, color) {
   ctx.fillRect(x * 10, y * 10, 10, 10);
 }
 
-function updateColor(event) {
-  selectedColor = event.target.getAttribute("color");
-  new Audio('audio/Select Color.mp3').play();
-  showPlaceButton();
-}
+// function updateColor(event) {
+//   selectedColor = event.target.getAttribute("color");
+//   new Audio('audio/Select Color.mp3').play();
+//   showPlaceButton();
+// }
 
-let googleUser = {};
+// let googleUser = {};
 
-gapi.load("auth2", () => {
-  auth2 = gapi.auth2.init({
-    client_id:
-      "643889621133-5d35fgfaovrpo14rea6gv6oifssmd3jv.apps.googleusercontent.com",
-    cookiepolicy: "single_host_origin",
-  });
+// gapi.load("auth2", () => {
+//   auth2 = gapi.auth2.init({
+//     client_id:
+//       "643889621133-5d35fgfaovrpo14rea6gv6oifssmd3jv.apps.googleusercontent.com",
+//     cookiepolicy: "single_host_origin",
+//   });
 
-  auth2.attachClickHandler(
-    document.getElementById("google-button"),
-    {},
-    (googleUser) => {
-      id_token = googleUser.getAuthResponse().id_token;
-      const googleButton = document.getElementById("google-button");
-      const colorElement = googleButton.parentNode;
-      colorElement.innerHTML = "Verifying...";
+//   auth2.attachClickHandler(
+//     document.getElementById("google-button"),
+//     {},
+//     (googleUser) => {
+//       id_token = googleUser.getAuthResponse().id_token;
+//       const googleButton = document.getElementById("google-button");
+//       const colorElement = googleButton.parentNode;
+//       colorElement.innerHTML = "Verifying...";
 
-      fetch(window.location.href, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: id_token,
-        }),
-      }).then((response) => {
-          if (response.status == 200) {
-            colorElement.innerHTML = "";
-            for (const color of Object.keys(colors)) {
-              colorElement.innerHTML += `<input ${
-                color == selectedColor ? 'checked=""' : ""
-              } onchange="updateColor(event);" type="radio" name="color" style="background-color: ${
-                colors[color]
-              };" color="${color}"></div>`;
-            }
-            response.json().then((json) => {
-              generateCountdown(placeButton, json.cooldown);
-            });
-          } else {
-            response.text().then((text) => {
-              colorElement.innerHTML = text;
-            });
-          }
-      });
-    }
-  );
-});
+//       fetch(window.location.href, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           token: id_token,
+//         }),
+//       }).then((response) => {
+//           if (response.status == 200) {
+//             colorElement.innerHTML = "";
+//             for (const color of Object.keys(colors)) {
+//               colorElement.innerHTML += `<input ${
+//                 color == selectedColor ? 'checked=""' : ""
+//               } onchange="updateColor(event);" type="radio" name="color" style="background-color: ${
+//                 colors[color]
+//               };" color="${color}"></div>`;
+//             }
+//             response.json().then((json) => {
+//               generateCountdown(placeButton, json.cooldown);
+//             });
+//           } else {
+//             response.text().then((text) => {
+//               colorElement.innerHTML = text;
+//             });
+//           }
+//       });
+//     }
+//   );
+// });
 
 function showPlaceButton() {
   if (typeof selectedX !== "undefined" && selectedColor) {
@@ -171,59 +171,61 @@ socket.on("canvasUpdate", function(event) {
 });
 
 
-function placePixel(event) {
-  fetch("/placepixel", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      token: id_token,
-      selectedX: selectedX,
-      selectedY: selectedY,
-      selectedColor: selectedColor,
-    }),
-  }).then((response) => {
-    if (response.status == 403) {
-      placeButton.classList.add("red");
-      setTimeout(() => {placeButton.classList.remove("red")}, 2000)
-    } else if (response.status == 200) {
-      new Audio('audio/Pixel Placed.mp3').play();
-    }
-    response.json().then((json) => {
-      generateCountdown(placeButton, json.cooldown);
-    });
-  });
-}
+// function placePixel(event) {
+//   fetch("/placepixel", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       token: id_token,
+//       selectedX: selectedX,
+//       selectedY: selectedY,
+//       selectedColor: selectedColor,
+//     }),
+//   }).then((response) => {
+//     if (response.status == 403) {
+//       placeButton.classList.add("red");
+//       setTimeout(() => {placeButton.classList.remove("red")}, 2000)
+//     } else if (response.status == 200) {
+//       new Audio('audio/Pixel Placed.mp3').play();
+//     }
+//     response.json().then((json) => {
+//       generateCountdown(placeButton, json.cooldown);
+//     });
+//   });
+// }
 
-function generateCountdown(element, timestamp) {
-  const enableTime = new Date(timestamp);
-  if (interval) {
-    clearInterval(interval);
-  }
-  const timeRemaining = Math.ceil(
-    (enableTime.getTime() - new Date().getTime()) / 100
-  );
-  if (1 > timeRemaining) {
-    return;
-  }
+// function generateCountdown(element, timestamp) {
+//   const enableTime = new Date(timestamp);
+//   if (interval) {
+//     clearInterval(interval);
+//   }
+//   const timeRemaining = Math.ceil(
+//     (enableTime.getTime() - new Date().getTime()) / 100
+//   );
+//   if (1 > timeRemaining) {
+//     return;
+//   }
 
-  interval = setInterval(() => {
-    const timeRemaining = Math.ceil(
-      (enableTime.getTime() - new Date().getTime()) / 1000
-    );
+//   element.classList.remove("enabled")
+//   interval = setInterval(() => {
+//     const timeRemaining = Math.ceil(
+//       (enableTime.getTime() - new Date().getTime()) / 1000
+//     );
     
-    const minute = ~~(timeRemaining / 59.9).toString();
-    const second = (timeRemaining % 60).toString();
+//     const minute = ~~(timeRemaining / 59.9).toString();
+//     const second = (timeRemaining % 60).toString();
 
-    element.innerHTML = `${minute.length == 1 ? "0" : ""}${minute}:${
-      second.length == 1 ? "0" : ""
-    }${second}`;
-    if (1 > timeRemaining) {
-      element.innerHTML = "✓";
-      clearInterval(interval);
-      interval = undefined;
-      new Audio('audio/Pixel Ready.mp3').play();
-    }
-  }, 1000);
-}
+//     element.innerHTML = `${minute.length == 1 ? "0" : ""}${minute}:${
+//       second.length == 1 ? "0" : ""
+//     }${second}`;
+//     if (1 > timeRemaining) {
+//       element.classList.add("enabled");
+//       element.innerHTML = "✓";
+//       clearInterval(interval);
+//       interval = undefined;
+//       new Audio('audio/Pixel Ready.mp3').play();
+//     }
+//   }, 1000);
+// }

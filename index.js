@@ -26,15 +26,17 @@ const client = new MongoClient(process.env["MONGO_URL"], { useNewUrlParser: true
 let pixelArray, boardCollection;
 const usersCollection = client.db("board").collection("users");
 
-client.connect(err => {
+client.connect(async err => {
     if (err) {
         console.log(err);
     };
 
-    boardCollection = client.db("board").collection("pixels");
+    boardCollection = await client.db("board").collection("pixels");
+    boardCollection.deleteMany({pixelArray: null})
     boardCollection.findOne({}, {sort:{$natural:-1}}).then(board => {
       pixelArray = board.pixelArray
     });
+    boardCollection.find()
 });
 
 const verifyToken = async (idToken) => {
@@ -51,8 +53,8 @@ const verifyToken = async (idToken) => {
 
   // get user payload
   const payload = ticket.getPayload();
-  if (payload.hd !== "virtuallearning.ca") {
-    throw "You must sign in with your VLC (@virtuallearning.ca) account.";
+  if (payload.hd !== "virtuallearning.ca" && payload.hd !== "tldsb.on.ca") {
+    throw "You must sign in with your VLC (@virtuallearning.ca or @tldsb.on.ca) account.";
   } else if (payload.aud !== process.env["GOOGLE_SECRET"]) {
     throw "Invalid Client ID: " + payload.aud;
   };
@@ -64,59 +66,62 @@ app.get("/", (req, res) => {
   res.render("board");
 });
 
-app.post("/", async (req, res) => {
-    let userId;
+// app.post("/", async (req, res) => {
+//     let userId;
     
-    try {
-        userId = await verifyToken(req.body.token);
-    } catch (err) {
-        return res.status(405).send(err);
-    };
+//     try {
+//         userId = await verifyToken(req.body.token);
+//     } catch (err) {
+//         return res.status(405).send(err);
+//     };
 
-    const user = await usersCollection.findOne({id: userId});
-    let cooldown;
+//     const user = await usersCollection.findOne({id: userId});
+//     let cooldown;
 
-    if (user) {
-      cooldown = user.cooldown;
-    } else {
-      cooldown = Date.now();
-      await usersCollection.insertOne({id: userId, cooldown: cooldown});
-    }
+//     if (user) {
+//       cooldown = user.cooldown;
+//     } else {
+//       cooldown = Date.now();
+//       await usersCollection.insertOne({id: userId, cooldown: cooldown});
+//     }
 
-    res.send({ cooldown: cooldown });
-});
+//     res.send({ cooldown: cooldown });
+// });
 
-app.post("/placepixel", async (req, res) => {
-  let userId;
-  try {
-    userId = await verifyToken(req.body.token);
-  } catch (err) {
-    return res.status(405).send(err);
-  }
+// app.post("/placepixel", async (req, res) => {
+//   let userId;
+//   try {
+//     userId = await verifyToken(req.body.token);
+//   } catch (err) {
+//     return res.status(405).send(err);
+//   }
 
-  const user = await usersCollection.findOne({id: userId});
-  let cooldown;
+//   const user = await usersCollection.findOne({id: userId});
+//   let cooldown;
 
-  if (user) {
-    cooldown = user.cooldown;
-  } else {
-    return res.status(405).send("Not a registered user!");
-  };
+//   if (user) {
+//     cooldown = user.cooldown;
+//   } else {
+//     return res.status(405).send("Not a registered user!");
+//   };
 
-  if (cooldown < Date.now()) {
-    pixelArray[req.body.selectedY][req.body.selectedX] = parseInt(
-      req.body.selectedColor
-    );
+//   if (cooldown < Date.now()) {
+//     try {
+//        pixelArray[req.body.selectedY][req.body.selectedX] = parseInt(
+//         req.body.selectedColor
+//     ); 
+//     } catch (err) {
+//       return res.sendStatus(403)
+//     }
   
-    io.emit('pixelUpdate', { x: req.body.selectedX, y: req.body.selectedY, color: req.body.selectedColor, pixelArray: pixelArray });
-
-    const cooldown = Date.now() + 100000;
-    await usersCollection.updateOne({id: userId}, {$set: {id: userId, cooldown: cooldown}});
-    res.send({ cooldown: cooldown });
-  } else {
-    return res.status(403).send({cooldown: cooldown});
-  }
-});
+//     io.emit('pixelUpdate', { x: req.body.selectedX, y: req.body.selectedY, color: req.body.selectedColor, pixelArray: pixelArray });
+//     const cooldown = Date.now() + 15000;
+//     await usersCollection.updateOne({id: userId}, {$set: {id: userId, cooldown: cooldown}});
+//     res.send({ cooldown: cooldown });
+//   } else {
+//     return res.status(403).send({cooldown: cooldown});
+//   }
+// });
 
 app.get("/about", (req, res) => {
   res.redirect("https://en.wikipedia.org/wiki/R/place");
@@ -132,15 +137,15 @@ io.on("connection", socket => {
   socket.emit('canvasUpdate', { pixelArray: pixelArray });
 });
 
-setInterval(() => {
-  if (boardCollection) {
-     boardCollection.findOne({pixelArray: pixelArray}).then(board => {
-        if (!board) {
-          boardCollection.insertOne({pixelArray: pixelArray, timestamp: Date.now()})
-        }
-      }) 
-  }
-}, 1000)
+// setInterval(() => {
+//   if (boardCollection) {
+//      boardCollection.findOne({pixelArray: pixelArray}).then(board => {
+//         if (!board) {
+//           boardCollection.insertOne({pixelArray: pixelArray, timestamp: Date.now()})
+//         }
+//       }) 
+//   }
+// }, 1000)
 
 server.listen(8080, () => {
   console.log("Listening on port 8080\nhttp://localhost:8080");

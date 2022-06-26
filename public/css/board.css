@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap');
+
 html,
 body {
   margin: 0;
@@ -7,6 +9,7 @@ body {
 body {
   background-color: #2C2F33;
   overflow: hidden;
+  font-family: 'Kdam Thmor Pro', sans-serif;
 }
 
 .header {
@@ -33,6 +36,31 @@ body {
   width: 150px;
 }
 
+.links > a {
+  text-decoration: unset;
+  display: inline-block;
+  position: relative;
+  color: black;
+}
+
+.links > a:after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: black;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.links > a:hover:after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
 .logo {
   height: 50px;
 }
@@ -43,10 +71,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-#zoom-container {
-  transition: 0.5s ease all;
 }
 
 #board {
@@ -125,7 +149,6 @@ canvas {
   border-radius: 15px;
   text-align: center;
   transition: 1s all;
-  cursor: pointer;
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
@@ -134,6 +157,10 @@ canvas {
 
 #placePixel.show {
   bottom: 100;
+}
+
+#placePixel.enabled {
+  cursor: pointer;
 }
 
 .center {

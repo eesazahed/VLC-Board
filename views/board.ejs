@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>r/Place - Board</title>
+    <title>VLC Board</title>
 
     <!-- Favicon -->
     <link
@@ -26,7 +26,7 @@
     <meta name="title" content="VLC Board" />
     <meta
       name="description"
-      content="Work together to create something amazing. Join thousands of other students and see what happens when you share one huge canvas."
+      content="Work together to create something amazing. Join hundreds of other students and see what happens when you share one huge canvas."
     />
     <meta name="keywords" content="VLC Board" />
     <meta name="robots" content="noindex, nofollow" />
@@ -44,6 +44,7 @@
       content="643889621133-5d35fgfaovrpo14rea6gv6oifssmd3jv.apps.googleusercontent.com"
     />
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.js?features=default"></script>
 
     <!-- JS -->
     <script src="js/board/index.js" defer></script>
@@ -57,8 +58,9 @@
         <h1>VLC Board</h1>
       </div>
       <div class="links">
-        <a href="/about">About</a>
-        <a href="#" onclick="window.location.reload()">Logout</a>
+        <a href="/about" target="_blank">About</a>
+        <a href="https://github.com/TheRedstoneRadiant/VLC-r-Place" target="_blank">Github</a>
+<!--         <a href="#" onclick="window.location.reload()">Logout</a> -->
       </div>
     </div>
 
@@ -70,10 +72,11 @@
     </div>
 
     <div id="colors">
-      <button id="google-button">Sign in</button>
+<!--       <button id="google-button">Sign in</button> -->
+      <p>VLC Board has ended! Thank you very much to everyone who participated and thank you to the Student Council for the amazing spirit week! Created by Ibrahim Siddique.</p>
     </div>
-    <div class="center">
+<!--     <div class="center">
       <p id="placePixel" onclick="placePixel(event)">✓</p>
-    </div>
+    </div> -->
   </body>
 </html>

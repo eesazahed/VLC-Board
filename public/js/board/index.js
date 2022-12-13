@@ -53,8 +53,7 @@ let googleUser = {};
 
 gapi.load("auth2", () => {
   auth2 = gapi.auth2.init({
-    client_id:
-      "643889621133-5d35fgfaovrpo14rea6gv6oifssmd3jv.apps.googleusercontent.com",
+    client_id: googleClientId,
     cookiepolicy: "single_host_origin",
   });
 

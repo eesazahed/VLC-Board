@@ -63,7 +63,7 @@ const verifyToken = async (idToken) => {
 };
 
 app.get("/", (req, res) => {
-  res.render("board");
+  res.render("board", { googleClientId: process.env["GOOGLE_CLIENT_ID"] });
 });
 
 app.post("/", async (req, res) => {

@@ -22,7 +22,7 @@ const googleClient = new OAuth2Client(process.env["GOOGLE_SECRET"]);
 
 // MongoDB
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const client = new MongoClient(process.env["MONGO_URL"], { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+const client = new MongoClient(process.env["MONGO_URI"], { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 let pixelArray, boardCollection;
 const usersCollection = client.db("board").collection("users");
 

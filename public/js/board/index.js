@@ -33,14 +33,14 @@ function renderPixels(pixelArray) {
   for (let y = 0; y < pixelArray.length; y += 1) {
     for (let x = 0; x < pixelArray[y].length; x += 1) {
       ctx.fillStyle = colors[pixelArray[y][x]];
-      ctx.fillRect(x * 10, y * 10, 10, 10);
+      ctx.fillRect(x * 100, y * 100, 100, 100);
     }
   }
 }
 
 function renderPixel(x, y, color) {
   ctx.fillStyle = colors[color];
-  ctx.fillRect(x * 10, y * 10, 10, 10);
+  ctx.fillRect(x * 100, y * 100, 100, 100);
 }
 
 function updateColor(event) {
@@ -109,39 +109,39 @@ function renderCrosshair(selectedX, selectedY) {
     new Audio('audio/Select Tile & Open Color Select.mp3').play();
   }
 
-  const x = selectedX * 10;
-  const y = selectedY * 10;
+  const x = selectedX * 100;
+  const y = selectedY * 100;
 
   ctx.fillStyle = "#000";
 
-  ctx.fillRect(x, y, 3, 1);
-  ctx.fillRect(x, y, 1, 3);
+  ctx.fillRect(x, y, 30, 10);
+  ctx.fillRect(x, y, 10, 30);
 
-  ctx.fillRect(x + 7, y, 3, 1);
-  ctx.fillRect(x + 9, y, 1, 3);
+  ctx.fillRect(x + 70, y, 30, 10);
+  ctx.fillRect(x + 90, y, 10, 30);
 
-  ctx.fillRect(x, y + 7, 1, 3);
-  ctx.fillRect(x, y + 9, 3, 1);
+  ctx.fillRect(x, y + 70, 10, 30);
+  ctx.fillRect(x, y + 90, 30, 10);
 
-  ctx.fillRect(x + 7, y + 9, 3, 1);
-  ctx.fillRect(x + 9, y + 7, 1, 3);
+  ctx.fillRect(x + 70, y + 90, 30, 10);
+  ctx.fillRect(x + 90, y + 70, 10, 30);
 
   ctx.fillStyle = "#e0e2e4";
 
-  ctx.fillRect(x + 1, y + 1, 2, 0.7);
-  ctx.fillRect(x + 1, y + 1, 0.7, 2);
+  ctx.fillRect(x + 10, y + 10, 20, 7);
+  ctx.fillRect(x + 10, y + 10, 7, 20);
 
-  ctx.fillRect(x + 7, y + 1, 2, 0.7);
-  ctx.fillRect(x + 8, y + 1, 0.7, 2);
+  ctx.fillRect(x + 70, y + 10, 20, 7);
+  ctx.fillRect(x + 85, y + 10, 7, 20);
 
-  ctx.fillRect(x + 1, y + 7, 0.7, 2);
-  ctx.fillRect(x + 1, y + 8, 2, 0.7);
+  ctx.fillRect(x + 10, y + 70, 7, 20);
+  ctx.fillRect(x + 10, y + 85, 20, 7);
 
-  ctx.fillRect(x + 7, y + 8, 2, 0.7);
-  ctx.fillRect(x + 8, y + 7, 0.7, 2);
+  ctx.fillRect(x + 70, y + 82, 20, 7);
+  ctx.fillRect(x + 85, y + 70, 7, 20);
 
   coordElement.classList.add("show");
-  coordElement.innerHTML = `${selectedX}, ${selectedY}`;
+  coordElement.innerHTML = `${selectedX + 1}, ${selectedY + 1}`;
 
   showPlaceButton();
 }
@@ -153,8 +153,8 @@ board.addEventListener("mousedown", (e) => {
     renderPixel(selectedX, selectedY, pixelArray[selectedY][selectedX]);
   }
 
-  selectedX = ~~((e.clientX - rect.left) / zoom / 10);
-  selectedY = ~~((e.clientY - rect.top) / zoom / 10);
+  selectedX = ~~((e.clientX - rect.left) / zoom / 100);
+  selectedY = ~~((e.clientY - rect.top) / zoom / 100);
   renderCrosshair(selectedX, selectedY);
 });
 

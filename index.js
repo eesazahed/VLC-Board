@@ -31,12 +31,15 @@ client.connect(async err => {
         console.log(err);
     };
 
-    boardCollection = await client.db("board").collection("pixels");
-    boardCollection.deleteMany({pixelArray: null})
-    boardCollection.findOne({}, {sort:{$natural:-1}}).then(board => {
-      pixelArray = board.pixelArray
-    });
-    boardCollection.find()
+    boardCollection = client.db("board").collection("pixels");
+    
+    const board = await boardCollection.findOne({_id: "latestBoard"});
+    try {
+      pixelArray = board.pixelArray;
+    } catch (err) {
+      pixelArray = Array(10).fill(Array(10).fill(16));
+      await boardCollection.updateOne({_id: "latestBoard"}, {$set: {_id: "latestBoard", pixelArray}}, {upsert: true});
+    }
 });
 
 const verifyToken = async (idToken) => {
@@ -53,6 +56,7 @@ const verifyToken = async (idToken) => {
 
   // get user payload
   const payload = ticket.getPayload();
+  console.log(payload)
   if (payload.hd !== "virtuallearning.ca" && payload.hd !== "tldsb.on.ca") {
     throw "You must sign in with your VLC (@virtuallearning.ca or @tldsb.on.ca) account.";
   } else if (payload.aud !== process.env["GOOGLE_SECRET"]) {

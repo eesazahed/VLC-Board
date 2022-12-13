@@ -1,84 +1,73 @@
 <html>
-  <head>
-    <title>VLC Board</title>
 
-    <!-- Favicon -->
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="favicon/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="favicon/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="favicon/favicon-16x16.png"
-    />
-    <link rel="manifest" href="favicon/site.webmanifest" />
+<head>
+  <title>VLC Board</title>
 
-    <!-- Meta tags -->
-    <meta name="title" content="VLC Board" />
-    <meta
-      name="description"
-      content="Work together to create something amazing. Join hundreds of other students and see what happens when you share one huge canvas."
-    />
-    <meta name="keywords" content="VLC Board" />
-    <meta name="robots" content="noindex, nofollow" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="language" content="English" />
-    <meta name="author" content="Ibrahim Siddique" />
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png" />
+  <link rel="manifest" href="favicon/site.webmanifest" />
 
-    <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="css/board.css" />
+  <!-- Meta tags -->
+  <meta name="title" content="VLC Board" />
+  <meta name="description"
+    content="Work together to create something amazing. Join hundreds of other students and see what happens when you share one huge canvas." />
+  <meta name="keywords" content="VLC Board" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="language" content="English" />
+  <meta name="author" content="Ibrahim Siddique" />
 
-    <!-- Load Libraries -->
-    <script src="https://apis.google.com/js/platform.js"></script>
-    <meta
-      name="google-signin-client_id"
-      content="<%= googleClientId %>"
-    />
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.js?features=default"></script>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="css/board.css" />
 
-    <!-- JS -->
-    <script src="js/board/index.js" defer></script>
-    <script src="js/board/camera.js" defer></script>
-    <script>
-      const googleClientId = "<%- googleClientId %>";
-    </script>
-  </head>
+  <!-- Load Libraries -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <div id="g_id_onload" data-client_id="421353515798-d0s48fr2undoapir896fjhgvl45vtbji.apps.googleusercontent.com"
+    data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
+    data-auto_prompt="false">
+  </div>
 
-  <body>
-    <div class="header">
-      <div class="info">
-        <img class="logo" src="img/board.png" alt="VLC Board" />
-        <h1>VLC Board</h1>
-      </div>
-      <div class="links">
-        <a href="/about" target="_blank">About</a>
-        <a href="https://github.com/TheRedstoneRadiant/VLC-r-Place" target="_blank">Github</a>
-<!--         <a href="#" onclick="window.location.reload()">Logout</a> -->
-      </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.js?features=default"></script>
+
+  <!-- JS -->
+  <script src="js/board/index.js" defer></script>
+  <script src="js/board/camera.js" defer></script>
+  <script>
+    const googleClientId = "<%- googleClientId %>";
+  </script>
+</head>
+
+<body>
+  <div class="header">
+    <div class="info">
+      <img class="logo" src="img/board.png" alt="VLC Board" />
+      <h1>VLC Board</h1>
     </div>
+    <div class="links">
+      <a href="/about" target="_blank">About</a>
+      <a href="https://github.com/TheRedstoneRadiant/VLC-r-Place" target="_blank">Github</a>
+      <!--         <a href="#" onclick="window.location.reload()">Logout</a> -->
+    </div>
+  </div>
 
-    <div id="container">
-      <p id="pixel"></p>
-      <div id="zoom-container">
-        <canvas width="1000" height="1000" id="board"></canvas>
-      </div>
+  <div id="container">
+    <p id="pixel"></p>
+    <div id="zoom-container">
+      <canvas width="1000" height="1000" id="board"></canvas>
     </div>
+  </div>
 
-    <div id="colors">
-      <button id="google-button">Sign in</button>
+  <div id="colors">
+    <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_black"
+      data-text="signin_with" data-size="large" data-logo_alignment="left">
     </div>
-    <div class="center">
-      <p id="placePixel" onclick="placePixel(event)">✓</p>
-    </div>
-  </body>
+  </div>
+  <div class="center">
+    <p id="placePixel" onclick="placePixel(event)">✓</p>
+  </div>
+</body>
+
 </html>

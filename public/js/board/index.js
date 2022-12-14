@@ -1,6 +1,6 @@
 let selectedX = 0;
 let selectedY = 0;
-let id_token, pixelArray, interval;
+let pixelArray, interval;
 const coordElement = document.getElementById("pixel");
 const placeButton = document.getElementById("placePixel");
 
@@ -45,7 +45,7 @@ function renderPixel(x, y, color) {
 
 function updateColor(event) {
   selectedColor = event.target.getAttribute("color");
-  new Audio('audio/Select Color.mp3').play();
+  new Audio("audio/Select Color.mp3").play();
   showPlaceButton();
 }
 
@@ -57,7 +57,7 @@ function showPlaceButton() {
 
 function renderCrosshair(selectedX, selectedY) {
   if (selectedColor) {
-    new Audio('audio/Select Tile & Open Color Select.mp3').play();
+    new Audio("audio/Select Tile & Open Color Select.mp3").play();
   }
 
   const x = selectedX * 100;
@@ -111,16 +111,15 @@ board.addEventListener("mousedown", (e) => {
 
 const socket = io();
 
-socket.on("pixelUpdate", function(event) {
-    pixelArray = event.pixelArray;
-    renderPixel(event.x, event.y, event.color);
+socket.on("pixelUpdate", function (event) {
+  pixelArray = event.pixelArray;
+  renderPixel(event.x, event.y, event.color);
 });
 
-socket.on("canvasUpdate", function(event) {
-    pixelArray = event.pixelArray;
-    renderPixels(event.pixelArray);
+socket.on("canvasUpdate", function (event) {
+  pixelArray = event.pixelArray;
+  renderPixels(event.pixelArray);
 });
-
 
 function placePixel(event) {
   fetch("/placepixel", {
@@ -137,9 +136,11 @@ function placePixel(event) {
   }).then((response) => {
     if (response.status == 403) {
       placeButton.classList.add("red");
-      setTimeout(() => {placeButton.classList.remove("red")}, 2000)
+      setTimeout(() => {
+        placeButton.classList.remove("red");
+      }, 2000);
     } else if (response.status == 200) {
-      new Audio('audio/Pixel Placed.mp3').play();
+      new Audio("audio/Pixel Placed.mp3").play();
     }
     response.json().then((json) => {
       generateCountdown(placeButton, json.cooldown);
@@ -159,12 +160,12 @@ function generateCountdown(element, timestamp) {
     return;
   }
 
-  element.classList.remove("enabled")
+  element.classList.remove("enabled");
   interval = setInterval(() => {
     const timeRemaining = Math.ceil(
       (enableTime.getTime() - new Date().getTime()) / 1000
     );
-    
+
     const minute = ~~(timeRemaining / 59.9).toString();
     const second = (timeRemaining % 60).toString();
 
@@ -176,7 +177,7 @@ function generateCountdown(element, timestamp) {
       element.innerHTML = "✓";
       clearInterval(interval);
       interval = undefined;
-      new Audio('audio/Pixel Ready.mp3').play();
+      new Audio("audio/Pixel Ready.mp3").play();
     }
   }, 1000);
 }

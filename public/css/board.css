@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap");
 
 html,
 body {
@@ -7,9 +7,9 @@ body {
 }
 
 body {
-  background-color: #2C2F33;
+  background-color: #2c2f33;
   overflow: hidden;
-  font-family: 'Kdam Thmor Pro', sans-serif;
+  font-family: "Kdam Thmor Pro", sans-serif;
 }
 
 .header {
@@ -44,7 +44,7 @@ body {
 }
 
 .links > a:after {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   transform: scaleX(0);
@@ -172,5 +172,5 @@ canvas {
 
 .red {
   transition: 2s all;
-  background-color: #FF0000 !important;
+  background-color: #ff0000 !important;
 }

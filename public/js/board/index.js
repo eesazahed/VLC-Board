@@ -27,13 +27,15 @@ const keys = Object.keys(colors);
 let selectedColor;
 
 const canvas = document.getElementById("board");
-const ctx = canvas.getContext("2d", { alpha: false });
+const ctx = canvas.getContext("2d");
 
 function renderPixels(pixelArray) {
   for (let y = 0; y < pixelArray.length; y += 1) {
     for (let x = 0; x < pixelArray[y].length; x += 1) {
-      ctx.fillStyle = colors[pixelArray[y][x]];
-      ctx.fillRect(x * 100, y * 100, 100, 100);
+      if (pixelArray[y][x] != 16) {
+        ctx.fillStyle = colors[pixelArray[y][x]];
+        ctx.fillRect(x * 100, y * 100, 100, 100);
+      }
     }
   }
 }

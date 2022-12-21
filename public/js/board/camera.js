@@ -104,10 +104,10 @@ function dragEnd(e) {
 
 document.addEventListener("wheel", zoom_camera);
 
-board.addEventListener("touchstart", dragStart);
+document.addEventListener("touchstart", dragStart);
 document.addEventListener("touchend", dragEnd);
 document.addEventListener("touchmove", drag);
 
-board.addEventListener("mousedown", dragStart);
+document.addEventListener("mousedown", dragStart);
 document.addEventListener("mouseup", dragEnd);
 document.addEventListener("mousemove", drag);

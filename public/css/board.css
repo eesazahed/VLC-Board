@@ -99,6 +99,7 @@ body {
 canvas {
   background-color: white;
   border: 1.2px solid black;
+  image-rendering: pixelated;
 }
 
 #colors {

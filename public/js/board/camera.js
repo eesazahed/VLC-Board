@@ -1,7 +1,7 @@
 const zoomElement = document.getElementById("zoom-container");
 const board = document.getElementById("board");
 
-let zoom = window.screen.availHeight / 1400;
+let zoom = window.screen.availHeight / 700;
 zoomElement.style.transform = `scale(${zoom})`;
 
 let dragging = false;
@@ -11,13 +11,13 @@ let initialX, initialY;
 
 function zoom_camera(event) {
   const isTouchPad = event.wheelDeltaY ? event.wheelDeltaY === -3 * event.deltaY : event.deltaMode === 0;
-
+  
   if (event.deltaY < 0) {
-    if (zoom >= 15) return;
-    zoomElement.style.transform = `scale(${(zoom += isTouchPad ? 0.02 : 0.05)})`;
+    if (zoom >= 7) return;
+    zoomElement.style.transform = `scale(${(zoom += isTouchPad ? 0.5 : 0.8)})`;
   } else {
-    if (zoom <= 1) return;
-    zoomElement.style.transform = `scale(${(zoom -= isTouchPad ? 0.02 : 0.05)})`;
+    if (zoom <= 1.7) return;
+    zoomElement.style.transform = `scale(${(zoom -= isTouchPad ? 0.5 : 0.8)})`;
   }
 }
 

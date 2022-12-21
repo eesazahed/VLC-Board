@@ -29,8 +29,6 @@ let selectedColor;
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 
-ctx.scale(1, 1);
-
 function renderPixels(pixelArray) {
   for (let y = 0; y < pixelArray.length; y += 1) {
     for (let x = 0; x < pixelArray[y].length; x += 1) {

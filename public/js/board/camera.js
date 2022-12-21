@@ -55,10 +55,23 @@ function drag(e) {
         renderPixel(selectedX, selectedY, pixelArray[selectedY][selectedX]);
       }
 
-      if (!outOfBoundsX) {
+      if (selectedNextX < 0) {
+        selectedX = 0;
+      } 
+      else if (selectedNextX > pixelArray.length) {
+        selectedX = pixelArray.length;
+      }
+      else {
         selectedX = selectedNextX;
       }
-      if (!outOfBoundsY) {
+
+      if (selectedNextY < 0) {
+        selectedY = 0;
+      }
+      else if (selectedNextY > pixelArray[0].length) {
+        selectedY = selectedNextY > pixelArray[0].length;
+      }
+      else {
         selectedY = selectedNextY;
       }
 

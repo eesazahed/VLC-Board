@@ -16,7 +16,7 @@ function zoom_camera(event) {
     if (zoom >= 0.6) return;
     zoomElement.style.transform = `scale(${(zoom += isTouchPad ? 0.02 : 0.05)})`;
   } else {
-    if (zoom <= 0.25) return;
+    if (zoom <= 0.15) return;
     zoomElement.style.transform = `scale(${(zoom -= isTouchPad ? 0.02 : 0.05)})`;
   }
 }
@@ -29,6 +29,7 @@ function dragStart(e) {
     x = e.clientX;
     y = e.clientY;
   }
+
   initialX = x - currentX * zoom;
   initialY = y - currentY * zoom;
 
@@ -36,14 +37,33 @@ function dragStart(e) {
   board.classList.add("dragging");
 }
 
-function dragEnd(e) {
-  dragging = false;
-  board.classList.remove("dragging");
-}
-
-function move(e) {
+function drag(e) {
   if (dragging) {
     e.preventDefault();
+
+    const currentNextX = (x - initialX) / zoom;
+    const currentNextY = (y - initialY) / zoom;
+
+    const selectedNextX = ~((currentNextX - 2500) / 100);
+    const selectedNextY = ~((currentNextY - 2500) / 100);
+
+    const outOfBoundsX = selectedNextX < 0 || selectedNextX > pixelArray.length;
+    const outOfBoundsY = selectedNextY < 0 || selectedNextY > pixelArray[0].length;
+
+    if (selectedNextX != selectedX || selectedNextY != selectedY) {
+      if (typeof selectedX !== "undefined") {
+        renderPixel(selectedX, selectedY, pixelArray[selectedY][selectedX]);
+      }
+
+      if (!outOfBoundsX) {
+        selectedX = selectedNextX;
+      }
+      if (!outOfBoundsY) {
+        selectedY = selectedNextY;
+      }
+
+      renderCrosshair(selectedX, selectedY);
+    }
 
     if (e.type === "touchmove") {
       x = e.touches[0].clientX;
@@ -53,21 +73,28 @@ function move(e) {
       y = e.clientY;
     }
 
-    currentX = (x - initialX) / zoom;
-    currentY = (y - initialY) / zoom;
+    if (!outOfBoundsX) {
+      currentX = (x - initialX) / zoom;
+    };
+    if (!outOfBoundsY) {
+      currentY = (y - initialY) / zoom;
+    };
 
-    // if (currentX >= 1000 || currentX <= -1000) return;
-    // if (currentY >= 1000 || currentY <= -1000) return;
     board.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
   }
+}
+
+function dragEnd(e) {
+  dragging = false;
+  board.classList.remove("dragging");
 }
 
 document.addEventListener("wheel", zoom_camera);
 
 board.addEventListener("touchstart", dragStart);
 document.addEventListener("touchend", dragEnd);
-document.addEventListener("touchmove", move);
+document.addEventListener("touchmove", drag);
 
 board.addEventListener("mousedown", dragStart);
 document.addEventListener("mouseup", dragEnd);
-document.addEventListener("mousemove", move);
+document.addEventListener("mousemove", drag);

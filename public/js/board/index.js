@@ -27,7 +27,7 @@ const keys = Object.keys(colors);
 let selectedColor;
 
 const canvas = document.getElementById("board");
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d", { alpha: false });
 
 function renderPixels(pixelArray) {
   for (let y = 0; y < pixelArray.length; y += 1) {
@@ -96,18 +96,6 @@ function renderCrosshair(selectedX, selectedY) {
 
   showPlaceButton();
 }
-
-board.addEventListener("mousedown", (e) => {
-  const rect = board.getBoundingClientRect();
-
-  if (typeof selectedX !== "undefined") {
-    renderPixel(selectedX, selectedY, pixelArray[selectedY][selectedX]);
-  }
-
-  selectedX = ~~((e.clientX - rect.left) / zoom / 100);
-  selectedY = ~~((e.clientY - rect.top) / zoom / 100);
-  renderCrosshair(selectedX, selectedY);
-});
 
 const socket = io();
 

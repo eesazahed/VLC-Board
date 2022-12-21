@@ -58,6 +58,9 @@ function showPlaceButton() {
 }
 
 function renderCrosshair(selectedX, selectedY) {
+  coordElement.classList.add("show");
+  coordElement.innerHTML = `${selectedX + 1}, ${selectedY + 1}`;
+
   if (selectedColor) {
     new Audio("audio/Select Tile & Open Color Select.mp3").play();
   }
@@ -65,36 +68,33 @@ function renderCrosshair(selectedX, selectedY) {
   const x = selectedX * 10;
   const y = selectedY * 10;
 
-  ctx.fillStyle = "#000";
+  ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
 
-  ctx.fillRect(x, y, 3, 1);
+  ctx.fillRect(x + 1, y, 2, 1);
   ctx.fillRect(x, y, 1, 3);
 
-  ctx.fillRect(x + 7, y, 3, 1);
+  ctx.fillRect(x + 7, y, 2, 1);
   ctx.fillRect(x + 9, y, 1, 3);
 
-  ctx.fillRect(x, y + 7, 1, 3);
+  ctx.fillRect(x, y + 7, 1, 2);
   ctx.fillRect(x, y + 9, 3, 1);
 
-  ctx.fillRect(x + 7, y + 9, 3, 1);
+  ctx.fillRect(x + 7, y + 9, 2, 1);
   ctx.fillRect(x + 9, y + 7, 1, 3);
 
-  ctx.fillStyle = "#e0e2e4";
+  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
 
-  ctx.fillRect(x + 1, y + 1, 2, 0.7);
-  ctx.fillRect(x + 1, y + 1, 0.7, 2);
+  ctx.fillRect(x, y - 1, 4, 0.7);
+  ctx.fillRect(x - 1, y - 1, 0.7, 5);
 
-  ctx.fillRect(x + 7, y + 1, 2, 0.7);
-  ctx.fillRect(x + 8.3, y + 1, 0.7, 2);
+  ctx.fillRect(x + 6, y - 1, 4, 0.7);
+  ctx.fillRect(x + 10.3, y - 1, 0.7, 5);
   
-  ctx.fillRect(x + 1, y + 7, 0.7, 2);
-  ctx.fillRect(x + 1, y + 8.3, 2, 0.7);  
+  ctx.fillRect(x - 1, y + 6, 0.7, 5);
+  ctx.fillRect(x, y + 10.3, 4, 0.7);  
   
-  ctx.fillRect(x + 7, y + 8.3, 2, 0.7);
-  ctx.fillRect(x + 8.3, y + 7, 0.7, 2);
-
-  coordElement.classList.add("show");
-  coordElement.innerHTML = `${selectedX + 1}, ${selectedY + 1}`;
+  ctx.fillRect(x + 10.3, y + 6, 0.7, 4);
+  ctx.fillRect(x + 6, y + 10.3, 5, 0.7);
 
   showPlaceButton();
 }

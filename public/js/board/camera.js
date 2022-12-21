@@ -51,8 +51,33 @@ function drag(e) {
     const outOfBoundsY = selectedNextY < 0 || selectedNextY > pixelArray[0].length;
 
     if (selectedNextX != selectedX || selectedNextY != selectedY) {
-      if (typeof selectedX !== "undefined") {
+      if (selectedX != 0) {
+        // Old Pixel
         renderPixel(selectedX, selectedY, pixelArray[selectedY][selectedX]);
+
+        // Old Pixel Left
+        renderPixel(selectedX - 1, selectedY, pixelArray[selectedY][selectedX - 1]);
+
+        // Old Pixel Right
+        renderPixel(selectedX + 1, selectedY, pixelArray[selectedY][selectedX + 1]);
+
+        // Old Pixel Up
+        renderPixel(selectedX, selectedY - 1, pixelArray[selectedY - 1][selectedX]);
+
+        // Old Pixel Down
+        renderPixel(selectedX, selectedY + 1, pixelArray[selectedY + 1][selectedX]);
+
+        // Old Pixel Top Right
+        renderPixel(selectedX + 1, selectedY - 1, pixelArray[selectedY - 1][selectedX + 1]);
+
+        // Old Pixel Top Left
+        renderPixel(selectedX - 1, selectedY - 1, pixelArray[selectedY - 1][selectedX - 1]);
+
+        // Old Pixel Bottom Right
+        renderPixel(selectedX + 1, selectedY + 1, pixelArray[selectedY + 1][selectedX + 1]);
+
+        // Old Pixel Bottom Left
+        renderPixel(selectedX - 1, selectedY + 1, pixelArray[selectedY + 1][selectedX - 1]);
       }
 
       if (selectedNextX < 0) {

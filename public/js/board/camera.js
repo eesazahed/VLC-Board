@@ -1,7 +1,7 @@
 const zoomElement = document.getElementById("zoom-container");
 const board = document.getElementById("board");
 
-let zoom = window.screen.availHeight / 8000;
+let zoom = window.screen.availHeight / 1400;
 zoomElement.style.transform = `scale(${zoom})`;
 
 let dragging = false;
@@ -13,10 +13,10 @@ function zoom_camera(event) {
   const isTouchPad = event.wheelDeltaY ? event.wheelDeltaY === -3 * event.deltaY : event.deltaMode === 0;
 
   if (event.deltaY < 0) {
-    if (zoom >= 0.6) return;
+    if (zoom >= 15) return;
     zoomElement.style.transform = `scale(${(zoom += isTouchPad ? 0.02 : 0.05)})`;
   } else {
-    if (zoom <= 0.15) return;
+    if (zoom <= 1) return;
     zoomElement.style.transform = `scale(${(zoom -= isTouchPad ? 0.02 : 0.05)})`;
   }
 }
@@ -44,8 +44,8 @@ function drag(e) {
     const currentNextX = (x - initialX) / zoom;
     const currentNextY = (y - initialY) / zoom;
 
-    const selectedNextX = ~((currentNextX - 2500) / 100);
-    const selectedNextY = ~((currentNextY - 2500) / 100);
+    const selectedNextX = ~((currentNextX - 250) / 10);
+    const selectedNextY = ~((currentNextY - 250) / 10);
 
     const outOfBoundsX = selectedNextX < 0 || selectedNextX > pixelArray.length;
     const outOfBoundsY = selectedNextY < 0 || selectedNextY > pixelArray[0].length;

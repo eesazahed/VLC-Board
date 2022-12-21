@@ -1,7 +1,7 @@
 const zoomElement = document.getElementById("zoom-container");
 const board = document.getElementById("board");
 
-let zoom = window.screen.availHeight / 1472;
+let zoom = window.screen.availHeight / 15000;
 zoomElement.style.transform = `scale(${zoom})`;
 
 let dragging = false;
@@ -11,10 +11,10 @@ let initialX, initialY;
 
 function zoom_camera(event) {
   if (event.deltaY < 0) {
-    if (zoom >= 4.5) return;
+    if (zoom >= 1) return;
     zoomElement.style.transform = `scale(${(zoom += 0.1)})`;
   } else {
-    if (zoom <= 0.4) return;
+    if (zoom <= 0.15) return;
     zoomElement.style.transform = `scale(${(zoom -= 0.1)})`;
   }
 }
@@ -54,8 +54,8 @@ function move(e) {
     currentX = (x - initialX) / zoom;
     currentY = (y - initialY) / zoom;
 
-    if (currentX >= 1000 || currentX <= -1000) return;
-    if (currentY >= 1000 || currentY <= -1000) return;
+    // if (currentX >= 1000 || currentX <= -1000) return;
+    // if (currentY >= 1000 || currentY <= -1000) return;
     board.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
   }
 }

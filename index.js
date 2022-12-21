@@ -41,7 +41,7 @@ client.connect(async (err) => {
   try {
     pixelArray = board.pixelArray;
   } catch (err) {
-    pixelArray = Array(10).fill(Array(10).fill(16));
+    pixelArray = Array(500).fill(Array(500).fill(16));
     await boardCollection.updateOne(
       { _id: "latestBoard" },
       { $set: { _id: "latestBoard", pixelArray } },
@@ -152,21 +152,23 @@ app.get("/about", (req, res) => {
   res.redirect("https://en.wikipedia.org/wiki/R/place");
 });
 
-io.on("connection", (socket) => {
-  if (boardCollection) {
-    boardCollection.findOne({ _id: "latestBoard" }).then((board) => {
-      pixelArray = board.pixelArray;
-    });
+const sendPixelArray = (socket) => {
+  if (typeof pixelArray !== "undefined") {
+    if (socket) {
+      socket.emit("canvasUpdate", { pixelArray: pixelArray });
+    }
+  } else {
+    setTimeout(sendPixelArray, 250);
   }
+};
 
-  socket.emit("canvasUpdate", { pixelArray: pixelArray });
-});
+io.on("connection", sendPixelArray);
 
 setInterval(() => {
   if (pixelArray) {
     boardCollection.updateOne({ _id: "latestBoard" }, { $set: { pixelArray } });
   }
-}, 1000);
+}, 5000);
 
 server.listen(8080, () => {
   console.log("Listening on port 8080\nhttp://localhost:8080");

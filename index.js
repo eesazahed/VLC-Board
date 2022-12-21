@@ -94,7 +94,7 @@ app.post("/", async (req, res) => {
     cooldown = user.cooldown;
   } else {
     cooldown = Date.now();
-    await usersCollection.insertOne({
+    usersCollection.insertOne({
       _id: userPayload.sub,
       name: userPayload.name,
       cooldown: cooldown,

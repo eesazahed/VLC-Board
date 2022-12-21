@@ -1,7 +1,7 @@
 const zoomElement = document.getElementById("zoom-container");
 const board = document.getElementById("board");
 
-let zoom = window.screen.availHeight / 15000;
+let zoom = window.screen.availHeight / 8000;
 zoomElement.style.transform = `scale(${zoom})`;
 
 let dragging = false;
@@ -12,10 +12,10 @@ let initialX, initialY;
 function zoom_camera(event) {
   if (event.deltaY < 0) {
     if (zoom >= 1) return;
-    zoomElement.style.transform = `scale(${(zoom += 0.1)})`;
+    zoomElement.style.transform = `scale(${(zoom += 0.05)})`;
   } else {
     if (zoom <= 0.15) return;
-    zoomElement.style.transform = `scale(${(zoom -= 0.1)})`;
+    zoomElement.style.transform = `scale(${(zoom -= 0.05)})`;
   }
 }
 

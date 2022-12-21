@@ -12,24 +12,35 @@ body {
   font-family: "Kdam Thmor Pro", sans-serif;
 }
 
-.header {
+.sidebar {
   position: absolute;
-  z-index: 9999999999999999;
+  z-index: 3;
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
   background-color: white;
-  width: 100%;
-  height: 80px;
+  width: 200px;
+  height: 100%;
 }
 
-.header > div {
+.sidebar > div {
   display: flex;
   align-items: center;
   justify-content: space-around;
 }
 
 .info {
-  width: 250px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.info > h1 {
+  margin: 0;
+}
+
+.info > img {
+  height: 120px;
 }
 
 .links {
@@ -90,29 +101,24 @@ canvas {
 }
 
 #colors {
-  margin-top: -100px;
   position: absolute;
-  width: 100%;
-  height: 100px;
-  background-color: white;
+  bottom: 10;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-evenly;
-  align-items: center;
 }
 
 #colors > input[type="radio"] {
   appearance: none;
   background-color: red;
-  width: 5%;
-  height: 30%;
-  border-radius: 20px;
+  width: 40px;
+  height: 40px;
   border: 2px solid black;
   transition: all 0.2s;
 }
 
 #colors > input[type="radio"]:hover {
   cursor: pointer;
-  opacity: 0.9;
 }
 
 #colors > input[type="radio"]:checked {
@@ -134,7 +140,7 @@ canvas {
 }
 
 #pixel.show {
-  top: 100;
+  top: 10;
 }
 
 #placePixel {
@@ -156,7 +162,7 @@ canvas {
 }
 
 #placePixel.show {
-  bottom: 100;
+  bottom: 10;
 }
 
 #placePixel.enabled {

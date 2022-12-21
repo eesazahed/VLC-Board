@@ -15,9 +15,6 @@
     content="Work together to create something amazing. Join hundreds of other students and see what happens when you share one huge canvas." />
   <meta name="keywords" content="VLC Board" />
   <meta name="robots" content="noindex, nofollow" />
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="language" content="English" />
-  <meta name="author" content="Ibrahim Siddique" />
 
   <!-- CSS -->
   <link rel="stylesheet" type="text/css" href="css/board.css" />
@@ -42,30 +39,29 @@
 </head>
 
 <body>
-  <div class="header">
+  <div class="sidebar">
     <div class="info">
-      <img class="logo" src="img/board.png" alt="VLC Board" />
+      <img class="logo" src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/47058/artist-palette-emoji-clipart-xl.png" alt="VLC Board" />
       <h1>VLC Board</h1>
     </div>
     <div class="links">
       <a href="/about" target="_blank">About</a>
       <a href="https://github.com/TheRedstoneRadiant/VLC-r-Place" target="_blank">Github</a>
-      <!--         <a href="#" onclick="window.location.reload()">Logout</a> -->
+    </div>
+    <div id="colors">
+      <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_black"
+        data-text="signin_with" data-size="medium" data-logo_alignment="left">
+      </div>
     </div>
   </div>
 
   <div id="container">
     <p id="pixel"></p>
     <div id="zoom-container">
-      <canvas width="5000" height="5000" id="board"></canvas>
+      <canvas height="5000" width="5000" id="board"></canvas>
     </div>
   </div>
 
-  <div id="colors">
-    <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_black"
-      data-text="signin_with" data-size="large" data-logo_alignment="left">
-    </div>
-  </div>
   <div class="center">
     <p id="placePixel" onclick="placePixel(event)">✓</p>
   </div>

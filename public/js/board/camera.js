@@ -19,10 +19,10 @@ function zoom_camera(event) {
 
   if (event.deltaY < 0) {
     if (zoom >= 7) return;
-    zoomElement.style.transform = `scale(${(zoom += isTouchPad ? 0.2 : 0.5)})`;
+    zoomElement.style.transform = `scale(${(zoom += isTouchPad ? 0.1 : 0.5)})`;
   } else {
     if (zoom <= 1.2) return;
-    zoomElement.style.transform = `scale(${(zoom -= isTouchPad ? 0.2 : 0.5)})`;
+    zoomElement.style.transform = `scale(${(zoom -= isTouchPad ? 0.1 : 0.5)})`;
   }
 }
 

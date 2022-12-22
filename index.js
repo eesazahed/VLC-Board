@@ -109,7 +109,7 @@ app.post("/", async (req, res) => {
       name: userPayload.name,
       cooldown: cooldown,
       picture: userPayload.picture,
-      ip: req.header("x-forwarded-for")
+      ip: req.header("x-forwarded-for"),
     });
   }
 
@@ -137,7 +137,8 @@ app.post("/placepixel", async (req, res) => {
   if (cooldown < Date.now()) {
     try {
       pixelArray[req.body.selectedY][req.body.selectedX] = parseInt(
-        req.body.selectedColor, 10
+        req.body.selectedColor,
+        10
       );
     } catch (err) {
       return res.sendStatus(403);
@@ -149,23 +150,28 @@ app.post("/placepixel", async (req, res) => {
       color: req.body.selectedColor,
       pixelArray: pixelArray,
     });
-    
+
     const cooldown = Date.now() + 15000;
     res.send({ cooldown: cooldown });
-    
+
     await usersCollection.updateOne(
       { _id: userPayload.sub },
       { $set: { cooldown: cooldown } }
     );
-    
-    let _id = `${req.body.selectedX}${req.body.selectedY}`;
-    const pixel = await placedCollection.findOne({_id});
-    if (!pixel) {
-      placedCollection.insertOne({_id, p: [{c: req.body.selectedColor, u: user._id}]});
-    } else {
-      placedCollection.updateOne({_id}, {$push: {p: {c: req.body.selectedColor, u: user._id}}});
-    }
 
+    let _id = `${req.body.selectedX}${req.body.selectedY}`;
+    const pixel = await placedCollection.findOne({ _id });
+    if (!pixel) {
+      placedCollection.insertOne({
+        _id,
+        p: [{ c: req.body.selectedColor, u: user._id }],
+      });
+    } else {
+      placedCollection.updateOne(
+        { _id },
+        { $push: { p: { c: req.body.selectedColor, u: user._id } } }
+      );
+    }
   } else {
     return res.status(403).send({ cooldown: cooldown });
   }
@@ -175,15 +181,22 @@ app.get("/about", (req, res) => {
   res.redirect("https://en.wikipedia.org/wiki/R/place");
 });
 
-app.get("/user", async (req, res) => {
-  const user = await usersCollection.findOne({_id: req.body.id});
-  
-  res.json({name: user.name, picture: user.picture});
-})
+app.post("/user", async (req, res) => {
+  const user = await usersCollection.findOne({ _id: req.body.id });
 
-app.get("/pixel", async (req, res) => {
-  const pixel = await placedCollection.findOne({_id: `${req.body.x}${req.body.y}`});
-  res.json(pixel);
+  res.json({ name: user.name, picture: user.picture });
+});
+
+app.post("/pixel", async (req, res) => {
+  const pixel = await placedCollection.findOne({
+    _id: `${req.body.x}${req.body.y}`,
+  });
+
+  if (!pixel) {
+    return res.sendStatus(404);
+  };
+
+  res.json(pixel.p[pixel.p.length - 1]);
 });
 
 const sendPixelArray = (socket) => {

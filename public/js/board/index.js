@@ -3,6 +3,7 @@ let selectedY;
 let pixelArray, interval;
 const coordElement = document.getElementById("pixel");
 const placeButton = document.getElementById("placePixel");
+const ownerElement = document.getElementById("owner");
 
 const colors = {
   // 1: "#6d001a",
@@ -36,7 +37,7 @@ const colors = {
   // 29: "#515252",
   30: "#898d90",
   31: "#d4d7d9",
-  32: "#ffffff"
+  32: "#ffffff",
 };
 
 let selectedColor;
@@ -142,12 +143,20 @@ function unrenderCrosshair(selectedX, selectedY) {
   if (pixelArray[selectedY - 1]) {
     // Old Pixel Top Right
     if (pixelArray[selectedY - 1][selectedX + 1]) {
-      renderPixel(selectedX + 1, selectedY - 1, pixelArray[selectedY - 1][selectedX + 1]);
+      renderPixel(
+        selectedX + 1,
+        selectedY - 1,
+        pixelArray[selectedY - 1][selectedX + 1]
+      );
     }
 
     // Old Pixel Top Left
     if (pixelArray[selectedY - 1][selectedX - 1]) {
-      renderPixel(selectedX - 1, selectedY - 1, pixelArray[selectedY - 1][selectedX - 1]);
+      renderPixel(
+        selectedX - 1,
+        selectedY - 1,
+        pixelArray[selectedY - 1][selectedX - 1]
+      );
     }
   }
 
@@ -155,12 +164,20 @@ function unrenderCrosshair(selectedX, selectedY) {
   if (pixelArray[selectedY + 1]) {
     // Old Pixel Bottom Right
     if (pixelArray[selectedY + 1][selectedX + 1]) {
-      renderPixel(selectedX + 1, selectedY + 1, pixelArray[selectedY + 1][selectedX + 1]);
+      renderPixel(
+        selectedX + 1,
+        selectedY + 1,
+        pixelArray[selectedY + 1][selectedX + 1]
+      );
     }
 
     // Old Pixel Bottom Left
     if (pixelArray[selectedY + 1][selectedX - 1]) {
-      renderPixel(selectedX - 1, selectedY + 1, pixelArray[selectedY + 1][selectedX - 1]);
+      renderPixel(
+        selectedX - 1,
+        selectedY + 1,
+        pixelArray[selectedY + 1][selectedX - 1]
+      );
     }
   }
 }
@@ -178,7 +195,7 @@ socket.on("canvasUpdate", function (event) {
 });
 
 function placePixel(event) {
-  console.log(selectedX, selectedY)
+  console.log(selectedX, selectedY);
   fetch("/placepixel", {
     method: "POST",
     headers: {
@@ -191,12 +208,7 @@ function placePixel(event) {
       selectedColor: selectedColor,
     }),
   }).then((response) => {
-    if (response.status == 403) {
-      placeButton.classList.add("red");
-      setTimeout(() => {
-        placeButton.classList.remove("red");
-      }, 2000);
-    } else if (response.status == 200) {
+    if (response.status == 200) {
       new Audio("audio/Pixel Placed.mp3").play();
     }
     response.json().then((json) => {
@@ -218,6 +230,8 @@ function generateCountdown(element, timestamp) {
   }
 
   element.classList.remove("enabled");
+  placeButton.disabled = true;
+
   interval = setInterval(() => {
     const timeRemaining = Math.ceil(
       (enableTime.getTime() - new Date().getTime()) / 1000
@@ -226,13 +240,16 @@ function generateCountdown(element, timestamp) {
     const minute = ~~(timeRemaining / 59.9).toString();
     const second = (timeRemaining % 60).toString();
 
-    element.innerHTML = `${minute.length == 1 ? "0" : ""}${minute}:${second.length == 1 ? "0" : ""
-      }${second}`;
+    element.innerHTML = `${minute.length == 1 ? "0" : ""}${minute}:${
+      second.length == 1 ? "0" : ""
+    }${second}`;
     if (1 > timeRemaining) {
       element.classList.add("enabled");
-      element.innerHTML = "✓";
+      element.innerHTML = `<i class="fa-sharp fa-solid fa-check"></i>`;
       clearInterval(interval);
       interval = undefined;
+      placeButton.disabled = false;
+
       new Audio("audio/Pixel Ready.mp3").play();
     }
   }, 1000);

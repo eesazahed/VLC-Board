@@ -183,7 +183,7 @@ const socket = io();
 socket.on("pixelUpdate", function (event) {
   pixelArray = event.pixelArray;
   renderPixel(event.x, event.y, event.color);
-  cachedPixels[`${event.x}${event.y}`] = {c: event.color, u: event.u};
+  cachedPixels[`${event.x}${event.y}`] = { c: event.color, u: event.u };
 });
 
 socket.on("canvasUpdate", function (event) {

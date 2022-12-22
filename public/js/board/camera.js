@@ -8,8 +8,8 @@ let dragging = false;
 let currentX = 0;
 let currentY = 0;
 let initialX, initialY;
-let focusTimeout;
-let cachedUsers = {}
+let focusTimeout, pixelQueryTimeout;
+let cachedUsers = {};
 let cachedPixels = {};
 
 function zoom_camera(event) {
@@ -49,8 +49,8 @@ function drag(e) {
     const currentNextX = (x - initialX) / zoom;
     const currentNextY = (y - initialY) / zoom;
 
-    const selectedNextX = (~((currentNextX - 250) / 10)) + 1;
-    const selectedNextY = (~((currentNextY - 250) / 10)) + 1;
+    const selectedNextX = ~((currentNextX - 250) / 10) + 1;
+    const selectedNextY = ~((currentNextY - 250) / 10) + 1;
 
     let moveDeltaX = Math.abs(x - e.clientX);
     let moveDeltaY = Math.abs(y - e.clientY);
@@ -95,6 +95,11 @@ function crosshairBorderRender(selectedNextX, selectedNextY) {
     selectedNextY < 0 || selectedNextY > pixelArray[0].length;
 
   if (selectedNextX != selectedX || selectedNextY != selectedY) {
+    if (pixelQueryTimeout) {
+      clearTimeout(pixelQueryTimeout);
+      pixelQueryTimeout = null;
+    }
+
     if (typeof selectedX != "undefined") {
       unrenderCrosshair(selectedX, selectedY);
     }
@@ -116,7 +121,9 @@ function crosshairBorderRender(selectedNextX, selectedNextY) {
     }
 
     renderCrosshair(selectedX, selectedY);
-    pixelInfo(selectedNextX, selectedNextY);
+    pixelQueryTimeout = setTimeout(() => {
+      pixelInfo(selectedNextX, selectedNextY);
+    }, 1000);
   }
 
   return outOfBoundsX, outOfBoundsY;
@@ -136,14 +143,14 @@ function renderPixelOwner(pixel) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: pixelOwner
-      })
-    }).then(response => {
-      response.json().then(json => {
+        id: pixelOwner,
+      }),
+    }).then((response) => {
+      response.json().then((json) => {
         cachedUsers[pixelOwner] = json;
         ownerElement.innerHTML = `<img src="${cachedUsers[pixelOwner].picture}" alt="${cachedUsers[pixelOwner].name}">
   <h3 class="name">${cachedUsers[pixelOwner].name}</h3>`;
-      })
+      });
     });
   } else {
     ownerElement.innerHTML = `<img src="${cachedUsers[pixelOwner].picture}" alt="${cachedUsers[pixelOwner].name}">
@@ -166,14 +173,13 @@ function pixelInfo(x, y) {
       if (response.status != 200) {
         cachedPixels[`${x}${y}`] = "open";
         renderPixelOwner("open");
-      }
-      else {
+      } else {
         response.json().then(async (json) => {
           cachedPixels[`${x}${y}`] = json;
           renderPixelOwner(cachedPixels[`${x}${y}`]);
         });
       }
-    })
+    });
   } else {
     renderPixelOwner(cachedPixels[`${x}${y}`]);
   }

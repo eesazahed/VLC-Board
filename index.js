@@ -37,6 +37,10 @@ let pixelArray, boardCollection;
 const usersCollection = client.db(process.env["DATABASE"]).collection("users");
 const placedCollection = client2.db(process.env["DATABASE"]).collection("placed");
 
+const allowedUsers = [
+  "Eesa Zahed"
+]
+
 client.connect(async (err) => {
   if (err) {
     console.log(err);
@@ -152,7 +156,7 @@ app.post("/placepixel", async (req, res) => {
       u: user._id,
     });
 
-    const cooldown = Date.now() + 15000;
+    const cooldown = allowedUsers.includes(user.name) ? 10 : Date.now() + 15000;
     res.send({ cooldown: cooldown });
 
     await usersCollection.updateOne(

@@ -192,7 +192,6 @@ socket.on("canvasUpdate", function (event) {
 });
 
 function placePixel(event) {
-  console.log(selectedX, selectedY);
   fetch("/placepixel", {
     method: "POST",
     headers: {

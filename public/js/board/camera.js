@@ -60,8 +60,6 @@ function drag(e) {
       focusTimeout = null;
     }
 
-    // console.log(currentNextY, currentY)
-
     const { outOfBoundsX, outOfBoundsY } = crosshairBorderRender(
       selectedNextX,
       selectedNextY

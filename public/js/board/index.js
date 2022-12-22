@@ -1,26 +1,42 @@
-let selectedX = 0;
-let selectedY = 0;
+let selectedX;
+let selectedY;
 let pixelArray, interval;
 const coordElement = document.getElementById("pixel");
 const placeButton = document.getElementById("placePixel");
 
 const colors = {
-  1: "#e50000",
-  2: "#ff4500",
-  3: "#e5d900",
-  4: "#02be01",
-  // 5: "#94e044",
-  6: "#2450a4",
-  // 7: "#2196F3",
-  8: "#51e9f4",
-  // 9: "#811e9f",
-  10: "#b44ac0",
-  11: "#ff99aa",
-  12: "#9c6926",
-  13: "#000000",
-  // 14: "#898d90",
-  15: "#d4d7d9",
-  16: "#ffffff",
+  1: "#6d001a",
+  2: "#be0039",
+  3: "#ff4500",
+  4: "#ffa800",
+  5: "#ffd635",
+  6: "#fff8b8",
+  7: "#00a368",
+  8: "#00cc78",
+  9: "#7eed56",
+  10: "#00756f",
+  11: "#009eaa",
+  12: "#00ccc0",
+  13: "#2450a4",
+  14: "#3690ea",
+  15: "#51e9f4",
+  16: "#493ac1",
+  17: "#6a5cff",
+  18: "#94b3ff",
+  19: "#811e9f",
+  20: "#b44ac0",
+  21: "#e4abff",
+  22: "#de107f",
+  23: "#ff3881",
+  24: "#ff99aa",
+  25: "#6d482f",
+  26: "#9c6926",
+  27: "#ffb470",
+  28: "#000000",
+  29: "#515252",
+  30: "#898d90",
+  31: "#d4d7d9",
+  32: "#ffffff"
 };
 
 const keys = Object.keys(colors);
@@ -32,7 +48,7 @@ const ctx = canvas.getContext("2d");
 function renderPixels(pixelArray) {
   for (let y = 0; y < pixelArray.length; y += 1) {
     for (let x = 0; x < pixelArray[y].length; x += 1) {
-      if (pixelArray[y][x] != 16) {
+      if (pixelArray[y][x] != 32) {
         ctx.fillStyle = colors[pixelArray[y][x]];
         ctx.fillRect(x * 10, y * 10, 10, 10);
       }
@@ -89,10 +105,10 @@ function renderCrosshair(selectedX, selectedY) {
 
   ctx.fillRect(x + 6, y - 1, 4, 0.7);
   ctx.fillRect(x + 10.3, y - 1, 0.7, 5);
-  
+
   ctx.fillRect(x - 1, y + 6, 0.7, 5);
-  ctx.fillRect(x, y + 10.3, 4, 0.7);  
-  
+  ctx.fillRect(x, y + 10.3, 4, 0.7);
+
   ctx.fillRect(x + 10.3, y + 6, 0.7, 4);
   ctx.fillRect(x + 6, y + 10.3, 5, 0.7);
 
@@ -159,9 +175,8 @@ function generateCountdown(element, timestamp) {
     const minute = ~~(timeRemaining / 59.9).toString();
     const second = (timeRemaining % 60).toString();
 
-    element.innerHTML = `${minute.length == 1 ? "0" : ""}${minute}:${
-      second.length == 1 ? "0" : ""
-    }${second}`;
+    element.innerHTML = `${minute.length == 1 ? "0" : ""}${minute}:${second.length == 1 ? "0" : ""
+      }${second}`;
     if (1 > timeRemaining) {
       element.classList.add("enabled");
       element.innerHTML = "✓";

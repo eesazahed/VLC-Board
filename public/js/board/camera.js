@@ -51,40 +51,62 @@ function drag(e) {
     const outOfBoundsY = selectedNextY < 0 || selectedNextY > pixelArray[0].length;
 
     if (selectedNextX != selectedX || selectedNextY != selectedY) {
-      if (selectedX != 0) {
+      if (typeof selectedX != "undefined") {
         // Old Pixel
         renderPixel(selectedX, selectedY, pixelArray[selectedY][selectedX]);
 
         // Old Pixel Left
-        renderPixel(selectedX - 1, selectedY, pixelArray[selectedY][selectedX - 1]);
+        if (pixelArray[selectedY][selectedX - 1]) {
+          renderPixel(selectedX - 1, selectedY, pixelArray[selectedY][selectedX - 1]);
+        }
 
         // Old Pixel Right
-        renderPixel(selectedX + 1, selectedY, pixelArray[selectedY][selectedX + 1]);
+        if (pixelArray[selectedY][selectedX + 1]) {
+          renderPixel(selectedX + 1, selectedY, pixelArray[selectedY][selectedX + 1]);          
+        }
 
         // Old Pixel Up
-        renderPixel(selectedX, selectedY - 1, pixelArray[selectedY - 1][selectedX]);
+        if (pixelArray[selectedY - 1]) {
+          renderPixel(selectedX, selectedY - 1, pixelArray[selectedY - 1][selectedX]);
+        }
 
         // Old Pixel Down
-        renderPixel(selectedX, selectedY + 1, pixelArray[selectedY + 1][selectedX]);
+        if (pixelArray[selectedY + 1]) {
+          renderPixel(selectedX, selectedY + 1, pixelArray[selectedY + 1][selectedX]);
+        }
 
-        // Old Pixel Top Right
-        renderPixel(selectedX + 1, selectedY - 1, pixelArray[selectedY - 1][selectedX + 1]);
+        // Old Pixel Top
+        if (pixelArray[selectedY - 1]) {
+          // Old Pixel Top Right
+          if (pixelArray[selectedY - 1][selectedX + 1]) {
+            renderPixel(selectedX + 1, selectedY - 1, pixelArray[selectedY - 1][selectedX + 1]);
+          }
 
-        // Old Pixel Top Left
-        renderPixel(selectedX - 1, selectedY - 1, pixelArray[selectedY - 1][selectedX - 1]);
+          // Old Pixel Top Left
+          if (pixelArray[selectedY - 1][selectedX - 1]) {
+            renderPixel(selectedX - 1, selectedY - 1, pixelArray[selectedY - 1][selectedX - 1]);
+          }
+        }
 
-        // Old Pixel Bottom Right
-        renderPixel(selectedX + 1, selectedY + 1, pixelArray[selectedY + 1][selectedX + 1]);
+        // Old Pixel Bottom
+        if (pixelArray[selectedY + 1]) {
+          // Old Pixel Bottom Right
+          if (pixelArray[selectedY + 1][selectedX + 1]) {
+            renderPixel(selectedX + 1, selectedY + 1, pixelArray[selectedY + 1][selectedX + 1]);
+          }
 
-        // Old Pixel Bottom Left
-        renderPixel(selectedX - 1, selectedY + 1, pixelArray[selectedY + 1][selectedX - 1]);
+          // Old Pixel Bottom Left
+          if (pixelArray[selectedY + 1][selectedX - 1]) {
+            renderPixel(selectedX - 1, selectedY + 1, pixelArray[selectedY + 1][selectedX - 1]);
+          }
+        }
       }
 
       if (selectedNextX < 0) {
         selectedX = 0;
       } 
-      else if (selectedNextX > pixelArray.length) {
-        selectedX = pixelArray.length;
+      else if (selectedNextX > pixelArray.length - 1) {
+        selectedX = pixelArray.length - 1;
       }
       else {
         selectedX = selectedNextX;
@@ -93,8 +115,8 @@ function drag(e) {
       if (selectedNextY < 0) {
         selectedY = 0;
       }
-      else if (selectedNextY > pixelArray[0].length) {
-        selectedY = selectedNextY > pixelArray[0].length;
+      else if (selectedNextY > pixelArray[0].length - 1) {
+        selectedY = pixelArray[0].length - 1;
       }
       else {
         selectedY = selectedNextY;

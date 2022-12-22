@@ -41,7 +41,7 @@ client.connect(async (err) => {
   try {
     pixelArray = board.pixelArray;
   } catch (err) {
-    pixelArray = Array(500).fill(Array(500).fill(16));
+    pixelArray = Array(50).fill(Array(50).fill(32));
     await boardCollection.updateOne(
       { _id: "latestBoard" },
       { $set: { _id: "latestBoard", pixelArray } },

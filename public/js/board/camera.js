@@ -121,9 +121,7 @@ function crosshairBorderRender(selectedNextX, selectedNextY) {
     }
 
     renderCrosshair(selectedX, selectedY);
-    pixelQueryTimeout = setTimeout(() => {
-      pixelInfo(selectedNextX, selectedNextY);
-    }, 1000);
+    pixelInfo(selectedNextX, selectedNextY);
   }
 
   return outOfBoundsX, outOfBoundsY;
@@ -160,26 +158,30 @@ function renderPixelOwner(pixel) {
 
 function pixelInfo(x, y) {
   if (!cachedPixels[`${x}${y}`]) {
-    fetch("/pixel", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        x,
-        y,
-      }),
-    }).then((response) => {
-      if (response.status != 200) {
-        cachedPixels[`${x}${y}`] = "open";
-        renderPixelOwner("open");
-      } else {
-        response.json().then(async (json) => {
-          cachedPixels[`${x}${y}`] = json;
-          renderPixelOwner(cachedPixels[`${x}${y}`]);
-        });
-      }
-    });
+    renderPixelOwner("open");
+    
+    pixelQueryTimeout = setTimeout(() => {
+      fetch("/pixel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          x,
+          y,
+        }),
+      }).then((response) => {
+        if (response.status != 200) {
+          cachedPixels[`${x}${y}`] = "open";
+          renderPixelOwner("open");
+        } else {
+          response.json().then(async (json) => {
+            cachedPixels[`${x}${y}`] = json;
+            renderPixelOwner(cachedPixels[`${x}${y}`]);
+          });
+        }
+      });
+    }, 1000);
   } else {
     renderPixelOwner(cachedPixels[`${x}${y}`]);
   }

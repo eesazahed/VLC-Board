@@ -1,7 +1,7 @@
 const zoomElement = document.getElementById("zoom-container");
 const board = document.getElementById("board");
 
-let zoom = window.screen.availHeight / 700;
+let zoom = window.screen.availHeight / (canvas.height * 1.5);
 zoomElement.style.transform = `scale(${zoom})`;
 
 let dragging = false;
@@ -49,8 +49,8 @@ function drag(e) {
     const currentNextX = (x - initialX) / zoom;
     const currentNextY = (y - initialY) / zoom;
 
-    const selectedNextX = ~((currentNextX - 250) / 10) + 1;
-    const selectedNextY = ~((currentNextY - 250) / 10) + 1;
+    const selectedNextX = ~((currentNextX - canvas.width / 2) / 10) + 1;
+    const selectedNextY = ~((currentNextY - canvas.height / 2) / 10) + 1;
 
     let moveDeltaX = Math.abs(x - e.clientX);
     let moveDeltaY = Math.abs(y - e.clientY);
@@ -106,16 +106,16 @@ function crosshairBorderRender(selectedNextX, selectedNextY) {
 
     if (selectedNextX < 0) {
       selectedX = 0;
-    } else if (selectedNextX > pixelArray.length - 1) {
-      selectedX = pixelArray.length - 1;
+    } else if (selectedNextX > pixelArray[0].length - 1) {
+      selectedX = pixelArray[0].length - 1;
     } else {
       selectedX = selectedNextX;
     }
 
     if (selectedNextY < 0) {
       selectedY = 0;
-    } else if (selectedNextY > pixelArray[0].length - 1) {
-      selectedY = pixelArray[0].length - 1;
+    } else if (selectedNextY > pixelArray.length - 1) {
+      selectedY = pixelArray.length - 1;
     } else {
       selectedY = selectedNextY;
     }

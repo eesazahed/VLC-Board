@@ -34,8 +34,8 @@ const client2 = new MongoClient(process.env["MONGO_URI2"], {
 });
 
 let pixelArray, boardCollection;
-const usersCollection = client.db("board").collection("users");
-const placedCollection = client2.db("board").collection("placed");
+const usersCollection = client.db(process.env["DATABASE"]).collection("users");
+const placedCollection = client2.db(process.env["DATABASE"]).collection("placed");
 
 client.connect(async (err) => {
   if (err) {
@@ -43,7 +43,7 @@ client.connect(async (err) => {
     process.exit(1);
   }
 
-  boardCollection = client.db("board").collection("pixels");
+  boardCollection = client.db(process.env["DATABASE"]).collection("pixels");
 
   const board = await boardCollection.findOne({ _id: "latestBoard" });
   try {
@@ -85,7 +85,7 @@ const verifyToken = async (idToken) => {
 };
 
 app.get("/", (req, res) => {
-  res.render("board", { googleClientId: process.env["GOOGLE_CLIENT_ID"] });
+  res.render("board", { googleClientId: process.env["GOOGLE_CLIENT_ID"], canvasHeight: pixelArray.length * 10, canvasWidth: pixelArray[0].length * 10 });
 });
 
 app.post("/", async (req, res) => {

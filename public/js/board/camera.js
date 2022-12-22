@@ -8,11 +8,11 @@ let dragging = false;
 let currentX = 0;
 let currentY = 0;
 let initialX, initialY;
-let holdStartTime;
+let focusTimeout;
 
 function zoom_camera(event) {
   const isTouchPad = event.wheelDeltaY ? event.wheelDeltaY === -3 * event.deltaY : event.deltaMode === 0;
-  
+
   if (event.deltaY < 0) {
     if (zoom >= 7) return;
     zoomElement.style.transform = `scale(${(zoom += isTouchPad ? 0.4 : 0.5)})`;
@@ -40,6 +40,12 @@ function dragStart(e) {
 
 function drag(e) {
   if (dragging) {
+
+    if (focusTimeout) {
+      clearTimeout(focusTimeout);
+      focusTimeout = null;
+    }
+
     e.preventDefault();
 
     const currentNextX = (x - initialX) / zoom;
@@ -48,36 +54,7 @@ function drag(e) {
     const selectedNextX = ~((currentNextX - 250) / 10);
     const selectedNextY = ~((currentNextY - 250) / 10);
 
-    const outOfBoundsX = selectedNextX < 0 || selectedNextX > pixelArray.length;
-    const outOfBoundsY = selectedNextY < 0 || selectedNextY > pixelArray[0].length;
-
-    if (selectedNextX != selectedX || selectedNextY != selectedY) {
-      if (typeof selectedX != "undefined") {
-        unrenderCrosshair(selectedX, selectedY);
-      }
-
-      if (selectedNextX < 0) {
-        selectedX = 0;
-      } 
-      else if (selectedNextX > pixelArray.length - 1) {
-        selectedX = pixelArray.length - 1;
-      }
-      else {
-        selectedX = selectedNextX;
-      }
-
-      if (selectedNextY < 0) {
-        selectedY = 0;
-      }
-      else if (selectedNextY > pixelArray[0].length - 1) {
-        selectedY = pixelArray[0].length - 1;
-      }
-      else {
-        selectedY = selectedNextY;
-      }
-
-      renderCrosshair(selectedX, selectedY);
-    }
+    const { outOfBoundsX, outOfBoundsY } = crosshairBorderRender(selectedNextX, selectedNextY)
 
     if (e.type === "touchmove") {
       x = e.touches[0].clientX;
@@ -103,6 +80,41 @@ function dragEnd(e) {
   board.classList.remove("dragging");
 }
 
+function crosshairBorderRender(selectedNextX, selectedNextY) {
+  const outOfBoundsX = selectedNextX < 0 || selectedNextX > pixelArray.length;
+  const outOfBoundsY = selectedNextY < 0 || selectedNextY > pixelArray[0].length;
+
+  if (selectedNextX != selectedX || selectedNextY != selectedY) {
+    if (typeof selectedX != "undefined") {
+      unrenderCrosshair(selectedX, selectedY);
+    }
+
+    if (selectedNextX < 0) {
+      selectedX = 0;
+    }
+    else if (selectedNextX > pixelArray.length - 1) {
+      selectedX = pixelArray.length - 1;
+    }
+    else {
+      selectedX = selectedNextX;
+    }
+
+    if (selectedNextY < 0) {
+      selectedY = 0;
+    }
+    else if (selectedNextY > pixelArray[0].length - 1) {
+      selectedY = pixelArray[0].length - 1;
+    }
+    else {
+      selectedY = selectedNextY;
+    }
+
+    renderCrosshair(selectedX, selectedY);
+  }
+
+  return outOfBoundsX, outOfBoundsY;
+}
+
 document.addEventListener("wheel", zoom_camera);
 
 document.addEventListener("touchstart", dragStart);
@@ -113,25 +125,40 @@ document.addEventListener("mousedown", dragStart);
 document.addEventListener("mouseup", dragEnd);
 document.addEventListener("mousemove", drag);
 
-board.onpointerdown = function() {
-  holdStartTime = Date.now();
-}
+let pointerdown = false;
 
-board.onpointerup = function(e) {
-  if (Date.now() - holdStartTime < 300) {
-    const rect = board.getBoundingClientRect();
-
+function pixelFocus(e) {
+  if (!pointerdown) {
     if (typeof selectedX !== "undefined") {
       unrenderCrosshair(selectedX, selectedY);
     }
-    
-    selectedX = ~~((e.clientX - rect.left) / zoom / 10);
-    selectedY = ~~((e.clientY - rect.top) / zoom / 10);
 
-    renderCrosshair(selectedX, selectedY);
+    const rect = board.getBoundingClientRect();
+
+    const selectedNextX = ~~((e.clientX - rect.left) / zoom / 10);
+    const selectedNextY = ~~((e.clientY - rect.top) / zoom / 10);
+
+    crosshairBorderRender(selectedNextX, selectedNextY);
 
     currentX = canvas.width / 2 - (e.clientX - rect.left) / zoom;
     currentY = canvas.height / 2 - (e.clientY - rect.top) / zoom;
     board.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+  }
+}
+
+let holdTimeStart;
+
+board.onpointerdown = function (e) {
+  focusTimeout = setTimeout(() => { pixelFocus(e) }, 300)
+  pointerdown = true;
+}
+
+board.onpointerup = function (e) {
+  pointerdown = false;
+
+  if (focusTimeout) {
+    clearTimeout(focusTimeout);
+    focusTimeout = null;
+    pixelFocus(e);
   };
 }

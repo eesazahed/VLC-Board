@@ -9,7 +9,8 @@ let currentX = 0;
 let currentY = 0;
 let initialX, initialY;
 let focusTimeout;
-let cachedUsers = {};
+let cachedUsers = {}
+let cachedPixels = {};
 
 function zoom_camera(event) {
   const isTouchPad = event.wheelDeltaY
@@ -43,18 +44,23 @@ function dragStart(e) {
 
 function drag(e) {
   if (dragging) {
-    if (focusTimeout) {
-      clearTimeout(focusTimeout);
-      focusTimeout = null;
-    }
-
     e.preventDefault();
 
     const currentNextX = (x - initialX) / zoom;
     const currentNextY = (y - initialY) / zoom;
 
-    const selectedNextX = ~((currentNextX - 250) / 10);
-    const selectedNextY = ~((currentNextY - 250) / 10);
+    const selectedNextX = (~((currentNextX - 250) / 10)) + 1;
+    const selectedNextY = (~((currentNextY - 250) / 10)) + 1;
+
+    let moveDeltaX = Math.abs(x - e.clientX);
+    let moveDeltaY = Math.abs(y - e.clientY);
+
+    if (focusTimeout && (moveDeltaX > 1 || moveDeltaY > 1)) {
+      clearTimeout(focusTimeout);
+      focusTimeout = null;
+    }
+
+    // console.log(currentNextY, currentY)
 
     const { outOfBoundsX, outOfBoundsY } = crosshairBorderRender(
       selectedNextX,
@@ -112,45 +118,67 @@ function crosshairBorderRender(selectedNextX, selectedNextY) {
     }
 
     renderCrosshair(selectedX, selectedY);
+    pixelInfo(selectedNextX, selectedNextY);
   }
 
   return outOfBoundsX, outOfBoundsY;
 }
 
-function pixelInfo(x, y) {
-  fetch("/pixel", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      x,
-      y,
-    }),
-  }).then((response) => {
-    if (response.status != 200) {
-      ownerElement.innerHTML = "";
-      return;
-    }
+function renderPixelOwner(pixel) {
+  if (pixel == "open") {
+    ownerElement.innerHTML = "";
+    return;
+  }
 
-    response.json().then(async (json) => {
-      let pixelOwner = json.u;
-      if (!cachedUsers[pixelOwner]) {
-        const response = await fetch("/user", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: pixelOwner
-          })
-        });
-        cachedUsers[pixelOwner] = await response.json();
-      };
-      ownerElement.innerHTML = `<img src="${cachedUsers[pixelOwner].picture}" alt="${cachedUsers[pixelOwner].name}">
-      <h3 class="name">${cachedUsers[pixelOwner].name}</h3>`;
+  let pixelOwner = pixel.u;
+  if (!cachedUsers[pixelOwner]) {
+    fetch("/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: pixelOwner
+      })
+    }).then(response => {
+      response.json().then(json => {
+        cachedUsers[pixelOwner] = json;
+        ownerElement.innerHTML = `<img src="${cachedUsers[pixelOwner].picture}" alt="${cachedUsers[pixelOwner].name}">
+  <h3 class="name">${cachedUsers[pixelOwner].name}</h3>`;
+      })
     });
-  });
+  } else {
+    ownerElement.innerHTML = `<img src="${cachedUsers[pixelOwner].picture}" alt="${cachedUsers[pixelOwner].name}">
+  <h3 class="name">${cachedUsers[pixelOwner].name}</h3>`;
+  }
+}
+
+function pixelInfo(x, y) {
+  if (!cachedPixels[`${x}${y}`]) {
+    fetch("/pixel", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        x,
+        y,
+      }),
+    }).then((response) => {
+      if (response.status != 200) {
+        cachedPixels[`${x}${y}`] = "open";
+        renderPixelOwner("open");
+      }
+      else {
+        response.json().then(async (json) => {
+          cachedPixels[`${x}${y}`] = json;
+          renderPixelOwner(cachedPixels[`${x}${y}`]);
+        });
+      }
+    })
+  } else {
+    renderPixelOwner(cachedPixels[`${x}${y}`]);
+  }
 }
 
 document.addEventListener("wheel", zoom_camera);
@@ -167,17 +195,14 @@ let pointerdown = false;
 
 function pixelFocus(e) {
   if (!pointerdown) {
-    if (typeof selectedX !== "undefined") {
-      unrenderCrosshair(selectedX, selectedY);
-    }
-
     const rect = board.getBoundingClientRect();
 
     const selectedNextX = ~~((e.clientX - rect.left) / zoom / 10);
     const selectedNextY = ~~((e.clientY - rect.top) / zoom / 10);
 
     crosshairBorderRender(selectedNextX, selectedNextY);
-    pixelInfo(selectedNextX, selectedNextY);
+
+    new Audio("audio/Select Tile & Open Color Select.mp3").play();
 
     currentX = canvas.width / 2 - (e.clientX - rect.left) / zoom;
     currentY = canvas.height / 2 - (e.clientY - rect.top) / zoom;

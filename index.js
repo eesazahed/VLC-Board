@@ -149,6 +149,7 @@ app.post("/placepixel", async (req, res) => {
       y: req.body.selectedY,
       color: req.body.selectedColor,
       pixelArray: pixelArray,
+      u: user._id
     });
 
     const cooldown = Date.now() + 15000;

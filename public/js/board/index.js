@@ -77,10 +77,6 @@ function renderCrosshair(selectedX, selectedY) {
   coordElement.classList.add("show");
   coordElement.innerHTML = `${selectedX + 1}, ${selectedY + 1}`;
 
-  if (selectedColor) {
-    new Audio("audio/Select Tile & Open Color Select.mp3").play();
-  }
-
   const x = selectedX * 10;
   const y = selectedY * 10;
 
@@ -187,6 +183,7 @@ const socket = io();
 socket.on("pixelUpdate", function (event) {
   pixelArray = event.pixelArray;
   renderPixel(event.x, event.y, event.color);
+  cachedPixels[`${event.x}${event.y}`] = {c: event.color, u: event.u};
 });
 
 socket.on("canvasUpdate", function (event) {

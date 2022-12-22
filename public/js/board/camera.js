@@ -8,6 +8,7 @@ let dragging = false;
 let currentX = 0;
 let currentY = 0;
 let initialX, initialY;
+let holdStartTime;
 
 function zoom_camera(event) {
   const isTouchPad = event.wheelDeltaY ? event.wheelDeltaY === -3 * event.deltaY : event.deltaMode === 0;
@@ -52,54 +53,7 @@ function drag(e) {
 
     if (selectedNextX != selectedX || selectedNextY != selectedY) {
       if (typeof selectedX != "undefined") {
-        // Old Pixel
-        renderPixel(selectedX, selectedY, pixelArray[selectedY][selectedX]);
-
-        // Old Pixel Left
-        if (pixelArray[selectedY][selectedX - 1]) {
-          renderPixel(selectedX - 1, selectedY, pixelArray[selectedY][selectedX - 1]);
-        }
-
-        // Old Pixel Right
-        if (pixelArray[selectedY][selectedX + 1]) {
-          renderPixel(selectedX + 1, selectedY, pixelArray[selectedY][selectedX + 1]);          
-        }
-
-        // Old Pixel Up
-        if (pixelArray[selectedY - 1]) {
-          renderPixel(selectedX, selectedY - 1, pixelArray[selectedY - 1][selectedX]);
-        }
-
-        // Old Pixel Down
-        if (pixelArray[selectedY + 1]) {
-          renderPixel(selectedX, selectedY + 1, pixelArray[selectedY + 1][selectedX]);
-        }
-
-        // Old Pixel Top
-        if (pixelArray[selectedY - 1]) {
-          // Old Pixel Top Right
-          if (pixelArray[selectedY - 1][selectedX + 1]) {
-            renderPixel(selectedX + 1, selectedY - 1, pixelArray[selectedY - 1][selectedX + 1]);
-          }
-
-          // Old Pixel Top Left
-          if (pixelArray[selectedY - 1][selectedX - 1]) {
-            renderPixel(selectedX - 1, selectedY - 1, pixelArray[selectedY - 1][selectedX - 1]);
-          }
-        }
-
-        // Old Pixel Bottom
-        if (pixelArray[selectedY + 1]) {
-          // Old Pixel Bottom Right
-          if (pixelArray[selectedY + 1][selectedX + 1]) {
-            renderPixel(selectedX + 1, selectedY + 1, pixelArray[selectedY + 1][selectedX + 1]);
-          }
-
-          // Old Pixel Bottom Left
-          if (pixelArray[selectedY + 1][selectedX - 1]) {
-            renderPixel(selectedX - 1, selectedY + 1, pixelArray[selectedY + 1][selectedX - 1]);
-          }
-        }
+        unrenderCrosshair(selectedX, selectedY);
       }
 
       if (selectedNextX < 0) {
@@ -158,3 +112,26 @@ document.addEventListener("touchmove", drag);
 document.addEventListener("mousedown", dragStart);
 document.addEventListener("mouseup", dragEnd);
 document.addEventListener("mousemove", drag);
+
+board.onpointerdown = function() {
+  holdStartTime = Date.now();
+}
+
+board.onpointerup = function(e) {
+  if (Date.now() - holdStartTime < 300) {
+    const rect = board.getBoundingClientRect();
+
+    if (typeof selectedX !== "undefined") {
+      unrenderCrosshair(selectedX, selectedY);
+    }
+    
+    selectedX = ~~((e.clientX - rect.left) / zoom / 10);
+    selectedY = ~~((e.clientY - rect.top) / zoom / 10);
+
+    renderCrosshair(selectedX, selectedY);
+
+    currentX = canvas.width / 2 - (e.clientX - rect.left) / zoom;
+    currentY = canvas.height / 2 - (e.clientY - rect.top) / zoom;
+    board.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+  };
+}

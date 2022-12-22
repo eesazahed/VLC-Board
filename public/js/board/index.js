@@ -114,6 +114,57 @@ function renderCrosshair(selectedX, selectedY) {
   showPlaceButton();
 }
 
+function unrenderCrosshair(selectedX, selectedY) {
+  // Old Pixel
+  renderPixel(selectedX, selectedY, pixelArray[selectedY][selectedX]);
+
+  // Old Pixel Left
+  if (pixelArray[selectedY][selectedX - 1]) {
+    renderPixel(selectedX - 1, selectedY, pixelArray[selectedY][selectedX - 1]);
+  }
+
+  // Old Pixel Right
+  if (pixelArray[selectedY][selectedX + 1]) {
+    renderPixel(selectedX + 1, selectedY, pixelArray[selectedY][selectedX + 1]);
+  }
+
+  // Old Pixel Up
+  if (pixelArray[selectedY - 1]) {
+    renderPixel(selectedX, selectedY - 1, pixelArray[selectedY - 1][selectedX]);
+  }
+
+  // Old Pixel Down
+  if (pixelArray[selectedY + 1]) {
+    renderPixel(selectedX, selectedY + 1, pixelArray[selectedY + 1][selectedX]);
+  }
+
+  // Old Pixel Top
+  if (pixelArray[selectedY - 1]) {
+    // Old Pixel Top Right
+    if (pixelArray[selectedY - 1][selectedX + 1]) {
+      renderPixel(selectedX + 1, selectedY - 1, pixelArray[selectedY - 1][selectedX + 1]);
+    }
+
+    // Old Pixel Top Left
+    if (pixelArray[selectedY - 1][selectedX - 1]) {
+      renderPixel(selectedX - 1, selectedY - 1, pixelArray[selectedY - 1][selectedX - 1]);
+    }
+  }
+
+  // Old Pixel Bottom
+  if (pixelArray[selectedY + 1]) {
+    // Old Pixel Bottom Right
+    if (pixelArray[selectedY + 1][selectedX + 1]) {
+      renderPixel(selectedX + 1, selectedY + 1, pixelArray[selectedY + 1][selectedX + 1]);
+    }
+
+    // Old Pixel Bottom Left
+    if (pixelArray[selectedY + 1][selectedX - 1]) {
+      renderPixel(selectedX - 1, selectedY + 1, pixelArray[selectedY + 1][selectedX - 1]);
+    }
+  }
+}
+
 const socket = io();
 
 socket.on("pixelUpdate", function (event) {

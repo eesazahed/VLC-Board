@@ -16,6 +16,7 @@
   "scripts": {
     "start": "node .",
     "dev": "env $(cat .env) nodemon .",
+    "dbreset": "env $(cat .env) node resetdb.js",
     "format": "npx prettier --write ."
   }
 }

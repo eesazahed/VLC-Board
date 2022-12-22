@@ -27,12 +27,20 @@ const client = new MongoClient(process.env["MONGO_URI"], {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
+const client2 = new MongoClient(process.env["MONGO_URI2"], {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverApi: ServerApiVersion.v1,
+});
+
 let pixelArray, boardCollection;
 const usersCollection = client.db("board").collection("users");
+const placedCollection = client2.db("board").collection("placed");
 
 client.connect(async (err) => {
   if (err) {
     console.log(err);
+    process.exit(1);
   }
 
   boardCollection = client.db("board").collection("pixels");
@@ -49,6 +57,8 @@ client.connect(async (err) => {
     );
   }
 });
+
+client2.connect();
 
 const verifyToken = async (idToken) => {
   // if missing ID token
@@ -98,6 +108,8 @@ app.post("/", async (req, res) => {
       _id: userPayload.sub,
       name: userPayload.name,
       cooldown: cooldown,
+      picture: userPayload.picture,
+      ip: req.header("x-forwarded-for")
     });
   }
 
@@ -137,12 +149,23 @@ app.post("/placepixel", async (req, res) => {
       color: req.body.selectedColor,
       pixelArray: pixelArray,
     });
+    
     const cooldown = Date.now() + 15000;
+    res.send({ cooldown: cooldown });
+    
     await usersCollection.updateOne(
       { _id: userPayload.sub },
       { $set: { cooldown: cooldown } }
     );
-    res.send({ cooldown: cooldown });
+    
+    let _id = `${req.body.selectedX}${req.body.selectedY}`;
+    const pixel = await placedCollection.findOne({_id});
+    if (!pixel) {
+      placedCollection.insertOne({_id, p: [{c: req.body.selectedColor, u: user._id}]});
+    } else {
+      placedCollection.updateOne({_id}, {$push: {p: {c: req.body.selectedColor, u: user._id}}});
+    }
+
   } else {
     return res.status(403).send({ cooldown: cooldown });
   }
@@ -150,6 +173,17 @@ app.post("/placepixel", async (req, res) => {
 
 app.get("/about", (req, res) => {
   res.redirect("https://en.wikipedia.org/wiki/R/place");
+});
+
+app.get("/user", async (req, res) => {
+  const user = await usersCollection.findOne({_id: req.body.id});
+  
+  res.json({name: user.name, picture: user.picture});
+})
+
+app.get("/pixel", async (req, res) => {
+  const pixel = await placedCollection.findOne({_id: `${req.body.x}${req.body.y}`});
+  res.json(pixel);
 });
 
 const sendPixelArray = (socket) => {

@@ -24,7 +24,7 @@ body {
   height: 100%;
 }
 
-.sidebar > div {
+.sidebar>div {
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -36,11 +36,11 @@ body {
   flex-direction: column;
 }
 
-.info > h1 {
+.info>h1 {
   margin: 0;
 }
 
-.info > img {
+.info>img {
   height: 120px;
 }
 
@@ -48,14 +48,14 @@ body {
   width: 150px;
 }
 
-.links > a {
+.links>a {
   text-decoration: unset;
   display: inline-block;
   position: relative;
   color: black;
 }
 
-.links > a:after {
+.links>a:after {
   content: "";
   position: absolute;
   width: 100%;
@@ -68,7 +68,7 @@ body {
   transition: transform 0.25s ease-out;
 }
 
-.links > a:hover:after {
+.links>a:hover:after {
   transform: scaleX(1);
   transform-origin: bottom left;
 }
@@ -113,7 +113,7 @@ canvas {
   margin-bottom: 10px;
 }
 
-#colors > input[type="radio"] {
+#colors>input[type="radio"] {
   margin: 4px;
   appearance: none;
   width: 40px;
@@ -122,11 +122,11 @@ canvas {
   transition: all 0.2s;
 }
 
-#colors > input[type="radio"]:hover {
+#colors>input[type="radio"]:hover {
   cursor: pointer;
 }
 
-#colors > input[type="radio"]:checked {
+#colors>input[type="radio"]:checked {
   opacity: 0.7;
 }
 
@@ -184,6 +184,55 @@ canvas {
   flex-direction: column;
 }
 
-#owner > img {
+#owner>img {
   width: 150px;
+}
+
+#error-box {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+.error-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  /* 15% from the top and centered */
+  padding: 20px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  width: 400px;
+  height: 200px;
+  /* Could be more or less, depending on screen size */
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.error-top {
+  height: 50px;
+}
+
+.close {
+  margin-left: auto;
+  cursor: pointer;
+  border: none;
+  background-color: red;
+  width: 80px;
+  height: 40px;
+  color: white;
+  font-weight: 700;
+  font-size: 17px;
 }

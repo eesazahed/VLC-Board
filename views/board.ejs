@@ -24,8 +24,7 @@
   <script src="js/googleSignin.js"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <div id="g_id_onload" data-client_id="421353515798-d0s48fr2undoapir896fjhgvl45vtbji.apps.googleusercontent.com"
-    data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
-    data-auto_prompt="false">
+    data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse" data-auto_prompt="false">
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
@@ -34,6 +33,7 @@
   <!-- JS -->
   <script src="js/board/index.js" defer></script>
   <script src="js/board/camera.js" defer></script>
+  <script src="js/error.js" defer></script>
   <script>
     const googleClientId = "<%- googleClientId %>";
   </script>
@@ -42,7 +42,9 @@
 <body>
   <div class="sidebar">
     <div class="info">
-      <img class="logo" src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/47058/artist-palette-emoji-clipart-xl.png" alt="VLC Board" />
+      <img class="logo"
+        src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/47058/artist-palette-emoji-clipart-xl.png"
+        alt="VLC Board" />
       <h1>VLC Board</h1>
       <div class="links">
         <a href="/about" target="_blank">About</a>
@@ -66,6 +68,15 @@
 
   <div class="center">
     <p id="placePixel" onclick="placePixel(event)"><i class="fa-sharp fa-solid fa-check"></i></p>
+  </div>
+  <div id="error-box">
+    <div class="error-content">
+      <div class="error-top">
+        <h1>:[</h1>
+      </div>
+      <p id="error">Error Text</p>
+      <button class="close" onclick="closeErrorBox()">Okay!</button>
+    </div>
   </div>
 </body>
 

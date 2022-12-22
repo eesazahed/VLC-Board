@@ -3,7 +3,6 @@ let id_token;
 function handleCredentialResponse(credential) {
   id_token = credential.credential;
   const colorElement = document.getElementById("colors");
-  colorElement.innerHTML = "Verifying...";
 
   fetch(window.location.href, {
     method: "POST",
@@ -28,7 +27,7 @@ function handleCredentialResponse(credential) {
       });
     } else {
       response.text().then((text) => {
-        colorElement.innerHTML = text;
+        displayErrorMessage(text);
       });
     }
   });

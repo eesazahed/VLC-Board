@@ -68,7 +68,7 @@ function renderCrosshair(selectedX, selectedY) {
   const x = selectedX * 10;
   const y = selectedY * 10;
 
-  ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
+  ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
 
   ctx.fillRect(x + 1, y, 2, 1);
   ctx.fillRect(x, y, 1, 3);
@@ -82,7 +82,7 @@ function renderCrosshair(selectedX, selectedY) {
   ctx.fillRect(x + 7, y + 9, 2, 1);
   ctx.fillRect(x + 9, y + 7, 1, 3);
 
-  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+  ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
 
   ctx.fillRect(x, y - 1, 4, 0.7);
   ctx.fillRect(x - 1, y - 1, 0.7, 5);

@@ -125,7 +125,7 @@ app.post("/placepixel", async (req, res) => {
   if (cooldown < Date.now()) {
     try {
       pixelArray[req.body.selectedY][req.body.selectedX] = parseInt(
-        req.body.selectedColor
+        req.body.selectedColor, 10
       );
     } catch (err) {
       return res.sendStatus(403);
